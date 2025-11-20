@@ -1,5 +1,7 @@
 
-use server::{config, infrastructure::database::postgresql_connection};
+use std::sync::Arc;
+
+use server::{config, infrastructure::{database::postgresql_connection, http::http_sev::start}};
 use tracing::{error, info};
 
 #[tokio::main]
@@ -15,9 +17,8 @@ async fn main() {
             std::process::exit(1);
         }
     };
-
     
-    let _postgres_pool = match postgresql_connection::establish_connection(&dotenvy_env.database.url)
+    let postgres_pool = match postgresql_connection::establish_connection(&dotenvy_env.database.url)
     {
         Ok(pool) => pool,
         Err(e) => {
@@ -28,4 +29,8 @@ async fn main() {
 
 
     info!("ENV has been loaded"); //info!("ENV has been loaded");
+
+    start(Arc::new(dotenvy_env), Arc::new(postgres_pool))
+        .await
+        .expect("Faile to Start")
 }
