@@ -8,7 +8,7 @@ use diesel::prelude::*;
 pub struct MissionEntity {
     pub id: i32,
     pub name: String,
-    pub description: String,
+    pub description: Option<String>,
     pub status: String,
     pub chief_id: i32,
     pub created_at: NaiveDateTime,
@@ -39,7 +39,7 @@ impl MissionEntity {
         MissionModel {
             id: self.id,
             name: self.name.clone(),
-            description: Some(self.description.clone()),
+            description: self.description.clone(),
             status: self.status.clone(),
             chief_id: self.chief_id,
             crew_count,
