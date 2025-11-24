@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::domain::{entities::crew_memberships::{CrewMembershipEntity, MAX_CREW_MEMBERSHIPS_PER_MISSION}, repositories::{
-    crew_participation::CrewParticipationRepository, mission_viewing::MissionViewingRepository,
+    crew_operation::CrewParticipationRepository, mission_viewing::MissionViewingRepository,
     transaction_provider::TransactionProvider,
 }, value_objects::mission_statuses::MissionStatus};
 use anyhow::Result;
