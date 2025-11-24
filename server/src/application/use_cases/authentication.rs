@@ -69,7 +69,7 @@ impl <T> AuthenticationUseCase<T>
         }
     }
     
-fn get_user_secret_env() -> Result<String>{
+pub fn get_user_secret_env() -> Result<String>{
     let secret_env = std::env::var("JWT_SECRET")
     .map_err(|_| anyhow::anyhow!("JWT_SECRET environment variable not set"))?;
     Ok(secret_env)
