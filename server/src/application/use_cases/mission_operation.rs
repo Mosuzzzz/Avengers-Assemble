@@ -2,7 +2,6 @@ use anyhow::Result;
 use std::sync::Arc;
 
 use crate::domain::{
-    entities::crew_memberships::MAX_CREW_MEMBERSHIPS_PER_MISSION,
     repositories::{
         mission_operation::MissionOperationRepository, mission_viewing::MissionViewingRepository,
     },
@@ -31,6 +30,10 @@ where
     }
 
     pub async fn in_progress(&self, mission_id: i32, chief_id: i32) -> Result<i32> {
+        let max_crew_per_mission = std::env::var("MAX_CREW_PER_MISSION")
+            .expect("missing value")
+            .parse()?;
+
         let mission = self
             .mission_viewing_repository
             .view_detail(mission_id)
@@ -45,7 +48,7 @@ where
             || mission.status == MissionStatus::Failed.to_string();
         let update_condition = is_status_open_or_fail
             && crew_count > 0
-            && crew_count < MAX_CREW_MEMBERSHIPS_PER_MISSION
+            && crew_count < max_crew_per_mission
             && mission.chief_id == chief_id;
         if !update_condition {
             return Err(anyhow::anyhow!("Invalid condition to change stages!"));

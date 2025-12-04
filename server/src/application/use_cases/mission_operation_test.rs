@@ -5,8 +5,7 @@ mod tests {
     use crate::{
         application::use_cases::mission_operation::MissionOperationUseCase,
         domain::{
-            entities::{
-                crew_memberships::MAX_CREW_MEMBERSHIPS_PER_MISSION, missions::MissionEntity,
+            entities::{ missions::MissionEntity,
             },
             repositories::{
                 mission_operation::MockMissionOperationRepository,
@@ -56,12 +55,14 @@ mod tests {
 
     #[tokio::test]
     async fn test_in_progress_crew_max() {
+        
+
         let mock_mission_operation_repository = MockMissionOperationRepository::new();
         let mut mock_mission_viewing_repository = MockMissionViewingRepository::new();
 
         mock_mission_viewing_repository
             .expect_crew_counting()
-            .returning(|_| Box::pin(async { Ok(MAX_CREW_MEMBERSHIPS_PER_MISSION + 1) }));
+            .returning(|_| Box::pin(async { Ok(10) }));
 
         mock_mission_viewing_repository
             .expect_view_detail()

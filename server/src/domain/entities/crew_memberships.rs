@@ -6,7 +6,6 @@ use crate::{
     infrastructure::database::schema::crew_memberships,
 };
 
-pub const MAX_CREW_MEMBERSHIPS_PER_MISSION: u32 = 10;
 
 #[derive(Debug, Clone, Queryable, Insertable,Associations, Serialize,Selectable, Deserialize)]
 #[diesel(belongs_to(BrawlerEntity, foreign_key = brawler_id))]

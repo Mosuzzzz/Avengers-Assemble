@@ -15,7 +15,7 @@ async fn main() {
         Err(e) => {
             error!("Failed to load ENV: {}", e);
             std::process::exit(1);
-        }
+        } 
     };
     
     let postgres_pool = match postgresql_connection::establish_connection(&dotenvy_env.database.url)

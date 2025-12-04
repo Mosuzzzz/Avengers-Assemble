@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::domain::{entities::crew_memberships::{CrewMembershipEntity, MAX_CREW_MEMBERSHIPS_PER_MISSION}, repositories::{
+use crate::domain::{entities::crew_memberships::{CrewMembershipEntity}, repositories::{
     crew_operation::CrewParticipationRepository, mission_viewing::MissionViewingRepository,
     transaction_provider::TransactionProvider,
 }, value_objects::mission_statuses::MissionStatus};
@@ -36,6 +36,11 @@ where
     }
 
     pub async fn join(&self, mission_id: i32, brawler_id: i32) -> Result<()> {
+
+        let max_crew_per_mission = std::env::var("MAX_CREW_PER_MISSION")
+            .expect("missing value")
+            .parse()?;
+
         let mission = self
             .mission_viewing_repository
             .view_detail(mission_id)
@@ -52,7 +57,7 @@ where
             return Err(anyhow::anyhow!("Mission is not joinable"));
         }
 
-        let crew_count_condition = crew_count < MAX_CREW_MEMBERSHIPS_PER_MISSION;
+        let crew_count_condition = crew_count < max_crew_per_mission;
         if !crew_count_condition {
             return Err(anyhow::anyhow!("Mission is full"));
         }
