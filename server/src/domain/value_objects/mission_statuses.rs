@@ -2,8 +2,8 @@ use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize,Default, PartialEq)]
-pub enum MissionStatus {
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
+pub enum MissionStatuses {
     #[default]
     Open,
     InProgress,
@@ -11,13 +11,13 @@ pub enum MissionStatus {
     Failed,
 }
 
-impl Display for MissionStatus {
+impl Display for MissionStatuses {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            MissionStatus::Open => write!(f, "Open"),
-            MissionStatus::InProgress => write!(f, "In Progress"),
-            MissionStatus::Completed => write!(f, "Completed"),
-            MissionStatus::Failed => write!(f, "Failed"),
+            MissionStatuses::Open => write!(f, "Open"),
+            MissionStatuses::InProgress => write!(f, "InProgress"),
+            MissionStatuses::Completed => write!(f, "Completed"),
+            MissionStatuses::Failed => write!(f, "Failed"),
         }
     }
 }

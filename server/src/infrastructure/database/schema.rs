@@ -31,7 +31,7 @@ diesel::table! {
         chief_id -> Int4,
         created_at -> Timestamp,
         updated_at -> Timestamp,
-        delete_at -> Nullable<Timestamp>,
+        deleted_at -> Nullable<Timestamp>,
     }
 }
 

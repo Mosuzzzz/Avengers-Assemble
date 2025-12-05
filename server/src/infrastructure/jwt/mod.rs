@@ -1,10 +1,10 @@
 pub mod authentication_model;
 pub mod jwt_model;
-use anyhow::Result;
+
+use anyhow::{Ok, Result};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 
 pub fn generate_token(secret: String, claims: &jwt_model::Claims) -> Result<String> {
-    // HSA256
     let token = encode(
         &Header::default(),
         claims,

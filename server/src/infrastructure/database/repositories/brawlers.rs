@@ -1,8 +1,18 @@
-use std::sync::Arc;
-use crate::{domain::{entities::brawlers::{BrawlerEntity, RegisterBrawlerEntity}, repositories::brawlers::BrawlerRepository}, infrastructure::database::{postgresql_connection::PgPoolSquad, schema::brawlers}};
 use anyhow::Result;
 use async_trait::async_trait;
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper, dsl::insert_into};
+use diesel::{
+    ExpressionMethods, RunQueryDsl, SelectableHelper, insert_into,
+    query_dsl::methods::{FilterDsl, SelectDsl},
+};
+use std::sync::Arc;
+
+use crate::{
+    domain::{
+        entities::brawlers::{BrawlerEntity, RegisterBrawlerEntity},
+        repositories::brawlers::BrawlerRepository,
+    },
+    infrastructure::database::{postgresql_connection::PgPoolSquad, schema::brawlers},
+};
 
 pub struct BrawlerPostgres {
     db_pool: Arc<PgPoolSquad>,
@@ -17,7 +27,6 @@ impl BrawlerPostgres {
 #[async_trait]
 impl BrawlerRepository for BrawlerPostgres {
     async fn register(&self, register_brawler_entity: RegisterBrawlerEntity) -> Result<i32> {
-
         let mut connection = Arc::clone(&self.db_pool).get()?;
 
         let result = insert_into(brawlers::table)
@@ -26,12 +35,9 @@ impl BrawlerRepository for BrawlerPostgres {
             .get_result::<i32>(&mut connection)?;
 
         Ok(result)
-
-}
-
+    }
 
     async fn find_by_username(&self, username: String) -> Result<BrawlerEntity> {
-
         let mut connection = Arc::clone(&self.db_pool).get()?;
 
         let result = brawlers::table
@@ -41,6 +47,4 @@ impl BrawlerRepository for BrawlerPostgres {
 
         Ok(result)
     }
-
-
 }

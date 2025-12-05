@@ -1,9 +1,8 @@
 use crate::infrastructure::database::schema::brawlers;
 use chrono::NaiveDateTime;
-use diesel::prelude::*;
+use diesel::{Selectable, prelude::*};
 
-
-#[derive(Debug,Clone,Identifiable, Queryable, Selectable)]
+#[derive(Debug, Clone, Identifiable, Selectable, Queryable)]
 #[diesel(table_name = brawlers)]
 pub struct BrawlerEntity {
     pub id: i32,
@@ -13,7 +12,7 @@ pub struct BrawlerEntity {
     pub updated_at: NaiveDateTime,
 }
 
-#[derive(Debug,Clone,Insertable)]
+#[derive(Debug, Clone, Insertable)]
 #[diesel(table_name = brawlers)]
 pub struct RegisterBrawlerEntity {
     pub username: String,

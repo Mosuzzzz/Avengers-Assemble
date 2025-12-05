@@ -18,14 +18,13 @@ use tower_http::{
 };
 use tracing::info;
 
-//  http::routes::default_routers
 use crate::{
     config::config_model::DotEnvyConfig,
-    infrastructure::{database::postgresql_connection::PgPoolSquad,}
+    infrastructure::database::postgresql_connection::PgPoolSquad,
 };
 
 fn static_serve() -> Router {
-    let dir = "static";
+    let dir = "statics";
 
     let service = ServeDir::new(dir).not_found_service(ServeFile::new(format!("{dir}/index.html")));
 
@@ -36,7 +35,7 @@ fn api_serve() -> Router {
     Router::new().fallback(|| async { (StatusCode::NOT_FOUND, "API not found") })
 }
 
-pub async fn start(config: Arc<DotEnvyConfig>, _db_pool: Arc<PgPoolSquad>) -> Result<()> {
+pub async fn start(config: Arc<DotEnvyConfig>, db_pool: Arc<PgPoolSquad>) -> Result<()> {
     let app = Router::new()
         .merge(static_serve())
         .nest("/api", api_serve())
