@@ -17,3 +17,9 @@ pub struct DotEnvyConfig {
     pub secret: String,
     // pub max_crew_per_mission: u32,
 }
+
+#[derive(Debug, Clone)]
+pub struct UserSecret {
+    pub secret: String,
+    pub refresh_secret: String,
+}

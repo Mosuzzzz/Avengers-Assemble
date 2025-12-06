@@ -20,7 +20,7 @@ use tracing::info;
 
 use crate::{
     config::config_model::DotEnvyConfig,
-    infrastructure::database::postgresql_connection::PgPoolSquad,
+    infrastructure::{database::postgresql_connection::PgPoolSquad, http::routers},
 };
 
 fn static_serve() -> Router {
@@ -31,16 +31,39 @@ fn static_serve() -> Router {
     Router::new().fallback_service(service)
 }
 
-fn api_serve() -> Router {
-    Router::new().fallback(|| async { (StatusCode::NOT_FOUND, "API not found") })
+fn api_serve(db_pool: Arc<PgPoolSquad>) -> Router {
+    Router::new()
+        .nest(
+            "/brawlers", 
+            routers::brawlers::routes(Arc::clone(&db_pool)))
+        .nest(
+            "/authentication", 
+            routers::authentication::routes(Arc::clone(&db_pool)))
+        .nest(
+            "/mission-management",
+            routers::mission_management::routes(Arc::clone(&db_pool)),
+        )
+        .nest(
+            "/crew",
+            routers::crew_operation::routes(Arc::clone(&db_pool)),
+        )
+        .nest(
+            "/mission",
+            routers::mission_operation::routes(Arc::clone(&db_pool)),
+        )
+        .nest(
+            "/view",
+            routers::mission_viewing::routes(Arc::clone(&db_pool)),
+        )
+        .fallback(|| async { (StatusCode::NOT_FOUND, "API not found") })
 }
 
 pub async fn start(config: Arc<DotEnvyConfig>, db_pool: Arc<PgPoolSquad>) -> Result<()> {
     let app = Router::new()
         .merge(static_serve())
-        .nest("/api", api_serve())
+        .nest("/api", api_serve(Arc::clone(&db_pool)))
         // .fallback(default_router::health_check)
-        // .route("/health_check", get(default_router::health_check)
+        // .route("/health_check", get(routers::default::health_check))
         .layer(TimeoutLayer::new(Duration::from_secs(
             config.server.timeout,
         )))

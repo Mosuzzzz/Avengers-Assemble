@@ -37,7 +37,7 @@ impl BrawlerRepository for BrawlerPostgres {
         Ok(result)
     }
 
-    async fn find_by_username(&self, username: String) -> Result<BrawlerEntity> {
+    async fn find_by_username(&self, username: &String) -> Result<BrawlerEntity> {
         let mut connection = Arc::clone(&self.db_pool).get()?;
 
         let result = brawlers::table

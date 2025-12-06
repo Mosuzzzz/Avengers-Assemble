@@ -1,6 +1,5 @@
-/target
-
+.vscode/
+api-tests/
 assemble.postman_collection.json
+target/
 .env
-.vscode
-api-tests

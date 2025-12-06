@@ -1,7 +1,7 @@
 use anyhow::Result;
 
 use crate::config::{
-    config_model::{Database, DotEnvyConfig, Server},
+    config_model::{Database, DotEnvyConfig, Server, UserSecret},
     stage::Stage,
 };
 
@@ -44,4 +44,21 @@ pub fn get_stage() -> Stage {
 
     let stage_str = std::env::var("STAGE").unwrap_or("".to_string());
     Stage::try_form(&stage_str).unwrap_or_default()
+}
+
+pub fn get_user_secret_env() -> Result<UserSecret> {
+    dotenvy::dotenv().ok();
+
+    let secret = std::env::var("JWT_USER_SECRET")
+        .expect("JWT_USER_SECRET is valid")
+        .parse()?;
+
+    let refresh_secret = std::env::var("JWT_USER_REFRESH_SECRET")
+        .expect("JWT_USER_REFRESH_SECRET is valid")
+        .parse()?;
+
+    Ok(UserSecret {
+        secret,
+        refresh_secret,
+    })
 }
