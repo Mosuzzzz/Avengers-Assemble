@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
 use axum::{
-    Extension, Json, Router,
+    Extension, Router,
     extract::{Path, State},
     http::StatusCode,
     middleware,
     response::IntoResponse,
-    routing::{delete, patch, post},
+    routing::{ patch},
 };
 
 use crate::{
@@ -52,7 +52,7 @@ where
     T1: MissionOperationRepository + Send + Sync,
     T2: MissionViewingRepository + Send + Sync,
 {
-    match mission_operation_use_case.in_progress(chief_id, mission_id).await {
+    match mission_operation_use_case.in_progress(mission_id, chief_id).await {
         Ok(mission_id) => {
             let response = format!(
                 "Mision ({}) is now {:?}",
