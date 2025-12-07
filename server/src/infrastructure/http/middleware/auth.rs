@@ -24,9 +24,7 @@ pub async fn authorization(mut req: Request, next: Next) -> Result<Response, Sta
         .map_err(|_| StatusCode::UNAUTHORIZED)?;
 
     let brawler_id = claims
-        .sub
-        .parse::<i32>()
-        .map_err(|_| StatusCode::UNAUTHORIZED)?;
+        .sub;
 
     req.extensions_mut().insert(brawler_id);
 
