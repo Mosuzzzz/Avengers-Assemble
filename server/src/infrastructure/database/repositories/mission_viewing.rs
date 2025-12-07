@@ -77,10 +77,9 @@ impl MissionViewingRepository for MissionViewingPostgres {
 
         let sql = r#"
             SELECT 
-               b.display_name,
-               COALESCE(b.avatar_url, '') AS avatar_url,
-               COALESCE(s.success_count, 0) AS mission_success_count,
-               COALESCE(j.joined_count, 0) AS mission_joined_count
+               COALESCE(b.avatar_url, '') AS avatar_url
+               COALESCE(s.success_count, 0) AS success_count,
+               COALESCE(j.joined_count, 0) AS joined_count,
             FROM 
                 crew_memberships cm
             INNER JOIN 
@@ -95,7 +94,7 @@ impl MissionViewingRepository for MissionViewingPostgres {
                     INNER JOIN 
                         missions m2 ON m2.id = cm2.mission_id
                     WHERE 
-                        m2.status = 'Completed'
+                        m2.status = 'completed' AND m2.id = $1
                     GROUP BY 
                         cm2.brawler_id
                 ) s ON s.brawler_id = cm.brawler_id
