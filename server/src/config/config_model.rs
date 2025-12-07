@@ -19,7 +19,14 @@ pub struct DotEnvyConfig {
 }
 
 #[derive(Debug, Clone)]
-pub struct UserSecret {
+pub struct JwtEnv {
     pub secret: String,
-    pub refresh_secret: String,
+    pub life_time_days: i64,
+}
+
+#[derive(Debug, Clone)]
+pub struct CloudinaryEnv {
+    pub cloud_name: String,
+    pub api_key: String,
+    pub api_secret: String,
 }

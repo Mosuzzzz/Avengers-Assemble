@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButton } from "@angular/material/button"
 
 
 
@@ -8,7 +9,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   selector: 'app-navbar',
   imports: [
     MatSlideToggleModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatButton
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',

@@ -7,7 +7,7 @@ use axum::{
     response::IntoResponse,
     routing::post,
 };
-use axum_extra::extract::cookie::{Cookie, CookieJar};
+use axum_extra::extract::cookie::{Cookie};
 use cookie::time::Duration;
 
 use crate::{
@@ -82,52 +82,52 @@ where
     }
 }
 
-pub async fn refresh_token<T>(
-    State(authentication_use_case): State<Arc<AuthenticationUseCase<T>>>,
-    jar: CookieJar,
-) -> impl IntoResponse
-where
-    T: BrawlerRepository + Send + Sync,
-{
-    if let Some(rft) = jar.get("refresh_token") {
-        let refresh_token = rft.value().to_string();
+// pub async fn refresh_token<T>(
+//     State(authentication_use_case): State<Arc<AuthenticationUseCase<T>>>,
+//     jar: CookieJar,
+// ) -> impl IntoResponse
+// where
+//     T: BrawlerRepository + Send + Sync,
+// {
+//     if let Some(rft) = jar.get("refresh_token") {
+//         let refresh_token = rft.value().to_string();
 
-        let response = match authentication_use_case.refresh_token(refresh_token).await {
-            Ok(passport) => {
-                let mut token = Cookie::build(("token", passport.access_token.clone()))
-                    .path("/")
-                    .same_site(cookie::SameSite::Lax)
-                    .http_only(true)
-                    .max_age(Duration::days(7));
+//         let response = match authentication_use_case.refresh_token(refresh_token).await {
+//             Ok(passport) => {
+//                 let mut token = Cookie::build(("token", passport.access_token.clone()))
+//                     .path("/")
+//                     .same_site(cookie::SameSite::Lax)
+//                     .http_only(true)
+//                     .max_age(Duration::days(7));
 
-                let mut refresh_token =
-                    Cookie::build(("refresh_token", passport.token_type.clone()))
-                        .path("/")
-                        .same_site(cookie::SameSite::Lax)
-                        .http_only(true)
-                        .max_age(Duration::days(7));
+//                 let mut refresh_token =
+//                     Cookie::build(("refresh_token", passport.token_type.clone()))
+//                         .path("/")
+//                         .same_site(cookie::SameSite::Lax)
+//                         .http_only(true)
+//                         .max_age(Duration::days(7));
 
-                if get_stage() == Stage::Production {
-                    token = token.secure(true);
-                    refresh_token = refresh_token.secure(true);
-                }
+//                 if get_stage() == Stage::Production {
+//                     token = token.secure(true);
+//                     refresh_token = refresh_token.secure(true);
+//                 }
 
-                let mut headers = HeaderMap::new();
-                headers.append(
-                    header::SET_COOKIE,
-                    HeaderValue::from_str(&token.to_string()).unwrap(),
-                );
-                headers.append(
-                    header::SET_COOKIE,
-                    HeaderValue::from_str(&refresh_token.to_string()).unwrap(),
-                );
+//                 let mut headers = HeaderMap::new();
+//                 headers.append(
+//                     header::SET_COOKIE,
+//                     HeaderValue::from_str(&token.to_string()).unwrap(),
+//                 );
+//                 headers.append(
+//                     header::SET_COOKIE,
+//                     HeaderValue::from_str(&refresh_token.to_string()).unwrap(),
+//                 );
 
-                (StatusCode::OK, headers, "Refresh token successfully").into_response()
-            }
-            Err(e) => (StatusCode::UNAUTHORIZED, e.to_string()).into_response(),
-        };
-        return response;
-    }
+//                 (StatusCode::OK, headers, "Refresh token successfully").into_response()
+//             }
+//             Err(e) => (StatusCode::UNAUTHORIZED, e.to_string()).into_response(),
+//         };
+//         return response;
+//     }
 
-    (StatusCode::BAD_REQUEST, "Refresh token not found").into_response()
-}
+//     (StatusCode::BAD_REQUEST, "Refresh token not found").into_response()
+// }

@@ -1,12 +1,13 @@
-use axum::{extract::Request, http::{StatusCode, header}, middleware::Next, response::Response};
+use axum::{
+    extract::Request,
+    http::{StatusCode, header},
+    middleware::Next,
+    response::Response,
+};
 
-
-use crate::config::config_loader::get_user_secret_env;
-
-
+use crate::config::config_loader::get_jwt_env;
 
 pub async fn authorization(mut req: Request, next: Next) -> Result<Response, StatusCode> {
-
     let auth_header = req
         .headers()
         .get(header::AUTHORIZATION)
@@ -17,8 +18,7 @@ pub async fn authorization(mut req: Request, next: Next) -> Result<Response, Sta
         .strip_prefix("Bearer ")
         .ok_or(StatusCode::UNAUTHORIZED)?;
 
-
-    let secret_env = get_user_secret_env().map_err(|_| StatusCode::UNAUTHORIZED)?;
+    let secret_env = get_jwt_env().map_err(|_| StatusCode::UNAUTHORIZED)?;
 
     let claims = crate::infrastructure::jwt::verify_token(secret_env.secret, token.to_string())
         .map_err(|_| StatusCode::UNAUTHORIZED)?;
@@ -27,7 +27,6 @@ pub async fn authorization(mut req: Request, next: Next) -> Result<Response, Sta
         .sub
         .parse::<i32>()
         .map_err(|_| StatusCode::UNAUTHORIZED)?;
-
 
     req.extensions_mut().insert(brawler_id);
 

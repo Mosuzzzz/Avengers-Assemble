@@ -1,7 +1,7 @@
 use anyhow::Result;
 
 use crate::config::{
-    config_model::{Database, DotEnvyConfig, Server, UserSecret},
+    config_model::{CloudinaryEnv, Database, DotEnvyConfig, JwtEnv, Server},
     stage::Stage,
 };
 
@@ -46,19 +46,35 @@ pub fn get_stage() -> Stage {
     Stage::try_form(&stage_str).unwrap_or_default()
 }
 
-pub fn get_user_secret_env() -> Result<UserSecret> {
+pub fn get_jwt_env() -> Result<JwtEnv> {
     dotenvy::dotenv().ok();
 
     let secret = std::env::var("JWT_USER_SECRET")
         .expect("JWT_USER_SECRET is valid")
         .parse()?;
 
-    let refresh_secret = std::env::var("JWT_USER_REFRESH_SECRET")
-        .expect("JWT_USER_REFRESH_SECRET is valid")
-        .parse()?;
+    let life_time_days = std::env::var("JWT_LIFE_TIME_DAYS")?
+        .parse::<i64>()?;
 
-    Ok(UserSecret {
+    Ok(JwtEnv {
         secret,
-        refresh_secret,
+        life_time_days,
+    })
+}
+
+
+pub fn get_cloundinary_env() -> Result<CloudinaryEnv> {
+    dotenvy::dotenv().ok();
+
+    let cloud_name = std::env::var("CLOUDINARY_CLOUD_NAME")?;
+
+    let api_key = std::env::var("CLOUDINARY_API_KEY")?;
+
+    let api_secret = std::env::var("CLOUDINARY_API_SECRET")?;
+
+    Ok(CloudinaryEnv {
+        cloud_name,
+        api_key,
+        api_secret,
     })
 }

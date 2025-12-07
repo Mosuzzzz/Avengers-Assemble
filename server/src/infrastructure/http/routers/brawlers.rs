@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use axum::{Json, Router, extract::State, http::StatusCode, response::IntoResponse, routing::post};
+use axum::{ Json, Router, extract::State, http::StatusCode, response::IntoResponse, routing::post};
 
 use crate::{
     application::use_cases::brawlers::BrawlersUseCase,
@@ -30,7 +30,7 @@ where
     T: BrawlerRepository + Send + Sync,
 {
     match brawlers_use_case.register(register_brawler_model).await {
-        Ok(brawler_id) => (StatusCode::CREATED, brawler_id.to_string()).into_response(),
+        Ok(passport) => (StatusCode::CREATED, Json(passport)).into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
 }
