@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository hosts the project developed for the **Internet Programming** subject at [Your University Name].
+This repository hosts the project developed for the **Internet Programming** subject at [RMUTI].
 
 The project, tentatively named "Avengers-Assemble," is a **High-Performance Backend Service** built to demonstrate a functional Web API connecting to a database, leveraging a tech stack focused on high performance and safety.
 
