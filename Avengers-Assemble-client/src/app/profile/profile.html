@@ -1,1 +1,32 @@
-<p>profile works!</p>
+<div class="container mx-auto p-4 max-w-md">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>My Profile</mat-card-title>
+            <mat-card-subtitle>Manage your avatar</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="flex flex-col items-center gap-4 mt-6">
+
+            <div class="avatar-preview">
+                @if (previewUrl()) {
+                <img [src]="previewUrl()" alt="Avatar Preview"
+                    class="w-32 h-32 rounded-full object-cover border-4 border-gray-200">
+                } @else {
+                <!-- Placeholder or current avatar if in user model -->
+                <div class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+                    <mat-icon class="scale-150">person</mat-icon>
+                </div>
+                }
+            </div>
+
+            <div class="w-full">
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden" #fileInput>
+                <div class="flex justify-center gap-2">
+                    <button mat-stroked-button (click)="fileInput.click()">Select Image</button>
+                    <button mat-raised-button color="primary" [disabled]="!selectedFile"
+                        (click)="uploadAvatar()">Upload</button>
+                </div>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>

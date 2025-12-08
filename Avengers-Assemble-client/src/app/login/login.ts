@@ -1,20 +1,28 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton, MatAnchor } from "@angular/material/button";
 import { PasswordValidator } from '../_helpers/password.validator';
 import { PasswordMatchValidator } from '../_helpers/password-match.validator';
+import { AccountService } from '../_services/account.service';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatLabel, MatInput, MatAnchor, MatButton],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInput, MatLabel, MatAnchor],
 
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 
 export class Login {
+  accountService = inject(AccountService);
+  router = inject(Router);
+  snackBar = inject(MatSnackBar);
+
+
   mode: 'login' | 'register' = 'login'
   form: FormGroup
 
@@ -25,6 +33,7 @@ export class Login {
     confirm_password: signal(''),
     display_name: signal('')
   }
+
 
   constructor() {
     this.form = new FormGroup({
@@ -45,6 +54,45 @@ export class Login {
         PasswordValidator(8, 16)
       ])
     })
+  }
+
+  onSubmit() {
+    if (this.form.invalid) return;
+
+    if (this.mode === 'login') {
+      this.accountService.login(this.form.value).subscribe({
+        next: () => {
+          this.router.navigateByUrl('/');
+        },
+        error: error => {
+          console.log(error);
+          this.snackBar.open(error.error || 'Login failed', 'Close', { duration: 3000 });
+        }
+      })
+    } else {
+      // For register, we need to match the backend expectation.
+      // Backend expects: username, password, display_name (maybe via Brawler model?)
+      // Check the backend RegisterBrawlerModel: 
+      // pub struct RegisterBrawlerModel { pub username: String, pub password: String, pub name: String }
+      // The form has display_name, backend expects 'name'.
+
+      const val = this.form.value;
+      const registerModel = {
+        username: val.username,
+        password: val.password,
+        display_name: val.display_name
+      };
+
+      this.accountService.register(registerModel).subscribe({
+        next: () => {
+          this.router.navigateByUrl('/');
+        },
+        error: error => {
+          console.log(error);
+          this.snackBar.open(error.error || 'Registration failed', 'Close', { duration: 3000 });
+        }
+      })
+    }
   }
 
 

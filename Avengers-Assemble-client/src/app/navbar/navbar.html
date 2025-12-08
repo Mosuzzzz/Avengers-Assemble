@@ -1,7 +1,11 @@
-<mat-toolbar class="my-navbar">
-  <span>My-app</span>
+<mat-toolbar class="my-navbar" color="primary">
+  <span routerLink="/" class="cursor-pointer">The Avengers Assemble</span>
   <span class="spacer"></span>
-  <button matButton>
-    <span>Login</span>
-  </button>
+
+  @if (accountService.user()) {
+  <span class="mr-4">Welcome, {{ accountService.user()?.username }}</span>
+  <button mat-button (click)="logout()">Logout</button>
+  } @else {
+  <button mat-button routerLink="/login" routerLinkActive="active">Login</button>
+  }
 </mat-toolbar>

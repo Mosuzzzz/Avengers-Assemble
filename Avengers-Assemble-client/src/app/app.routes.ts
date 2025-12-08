@@ -4,11 +4,13 @@ import { Profile } from './profile/profile';
 import { ServerError } from './server-error/server-error';
 import { NotFound } from './not-found/not-found';
 import { Login } from './login/login';
+import { MissionDetails } from './mission-details/mission-details';
 
 export const routes: Routes = [
-    {path: '', component:Home},
-    {path: 'login', component:Login},
-    {path: 'profile', component:Profile},
-    {path: 'server-error', component: ServerError},
-    {path: '**', component:NotFound}
+    { path: '', component: Home },
+    { path: 'login', component: Login },
+    { path: 'profile', component: Profile },
+    { path: 'mission/:id', component: MissionDetails },
+    { path: 'server-error', component: ServerError },
+    { path: '**', component: NotFound }
 ];

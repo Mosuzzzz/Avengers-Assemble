@@ -1,0 +1,8 @@
+.mission-card {
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+mat-card-content {
+    min-height: 200px;
+}

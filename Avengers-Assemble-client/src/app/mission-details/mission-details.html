@@ -1,0 +1,45 @@
+<div class="container mx-auto p-4">
+    @if (mission()) {
+    <mat-card class="mission-card">
+        <mat-card-header>
+            <mat-card-title class="text-2xl">{{ mission()?.name }}</mat-card-title>
+            <mat-card-subtitle>{{ mission()?.status }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="mt-4">
+            <p class="text-lg text-gray-700">{{ mission()?.description || 'No description provided.' }}</p>
+
+            <div class="mt-4">
+                <h3 class="font-bold mb-2">Crew ({{ participants().length }})</h3>
+                @if (participants().length > 0) {
+                <div class="flex flex-wrap gap-2">
+                    @for (participant of participants(); track $index) {
+                    <mat-chip>
+                        @if (participant.avatar_url) {
+                        <img matChipAvatar [src]="participant.avatar_url" alt="Avatar" />
+                        }
+                        {{ participant.display_name }}
+                    </mat-chip>
+                    }
+                </div>
+                } @else {
+                <p class="text-gray-500 italic">No crew members yet.</p>
+                }
+            </div>
+        </mat-card-content>
+        <mat-card-actions align="end" class="gap-2">
+            @if (accountService.user()) {
+            @if (isJoined()) {
+            <button mat-flat-button color="warn" (click)="leave()">LEAVE MISSION</button>
+            } @else {
+            <button mat-flat-button color="primary" (click)="join()">JOIN MISSION</button>
+            }
+            } @else {
+            <p class="text-sm text-gray-500 mr-2">Login to join</p>
+            <button mat-button disabled>JOIN MISSION</button>
+            }
+        </mat-card-actions>
+    </mat-card>
+    } @else {
+    <p>Loading mission details...</p>
+    }
+</div>
