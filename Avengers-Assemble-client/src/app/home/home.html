@@ -1,5 +1,32 @@
 <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">Available Missions</h1>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Available Missions</h1>
+        <button mat-flat-button color="primary" (click)="openCreateMissionDialog()">Create Mission</button>
+    </div>
+
+    <div class="mb-6 flex gap-4">
+        <mat-form-field class="flex-1">
+            <mat-label>Search by name</mat-label>
+            <input matInput [(ngModel)]="searchName" (ngModelChange)="onSearchChange()"
+                placeholder="Enter mission name">
+            @if (searchName) {
+            <button matSuffix mat-icon-button (click)="clearSearch()">
+                <mat-icon>close</mat-icon>
+            </button>
+            }
+        </mat-form-field>
+
+        <mat-form-field class="w-48">
+            <mat-label>Filter by status</mat-label>
+            <mat-select [(ngModel)]="filterStatus" (ngModelChange)="onSearchChange()">
+                <mat-option [value]="null">All</mat-option>
+                <mat-option value="Open">Open</mat-option>
+                <mat-option value="InProgress">In Progress</mat-option>
+                <mat-option value="Completed">Completed</mat-option>
+                <mat-option value="Failed">Failed</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         @for (mission of missions(); track mission.id) {

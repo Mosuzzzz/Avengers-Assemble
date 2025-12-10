@@ -1,6 +1,13 @@
-use std::{ sync::Arc};
+use std::sync::Arc;
 
-use axum::{Extension, Json, Router, extract::{Path, State}, http::StatusCode, middleware, response::IntoResponse, routing::{delete, patch, post}};
+use axum::{
+    Extension, Json, Router,
+    extract::{Path, State},
+    http::StatusCode,
+    middleware,
+    response::IntoResponse,
+    routing::{delete, patch, post},
+};
 
 use crate::{
     application::use_cases::mission_management::MissionManagementUseCase,
@@ -10,7 +17,17 @@ use crate::{
             mission_viewing::MissionViewingRepository,
         },
         value_objects::mission_model::{AddMissionModel, EditMissionModel},
-    }, infrastructure::{database::{postgresql_connection::PgPoolSquad, repositories::{mission_management::MissionManagementPostgres, mission_viewing::MissionViewingPostgres}}, http::middleware::auth::authorization},
+    },
+    infrastructure::{
+        database::{
+            postgresql_connection::PgPoolSquad,
+            repositories::{
+                mission_management::MissionManagementPostgres,
+                mission_viewing::MissionViewingPostgres,
+            },
+        },
+        http::middleware::auth::authorization,
+    },
 };
 
 pub async fn add<T1, T2>(
@@ -35,7 +52,6 @@ where
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
 }
-
 
 pub async fn edit<T1, T2>(
     State(mission_management_use_case): State<Arc<MissionManagementUseCase<T1, T2>>>,
@@ -80,20 +96,22 @@ where
     }
 }
 
-
 pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
     let mission_management_repository = MissionManagementPostgres::new(Arc::clone(&db_pool));
     let mission_viewing_repository = MissionViewingPostgres::new(Arc::clone(&db_pool));
 
-    let mission_management_use_case: MissionManagementUseCase<MissionManagementPostgres, MissionViewingPostgres> = MissionManagementUseCase::new(
+    let mission_management_use_case: MissionManagementUseCase<
+        MissionManagementPostgres,
+        MissionViewingPostgres,
+    > = MissionManagementUseCase::new(
         Arc::new(mission_management_repository),
         Arc::new(mission_viewing_repository),
     );
 
     Router::new()
-        .route("/", post(add))
-        .route("/{mission_id}", patch(edit))
-        .route("/{mission_id}", delete(remove))
+        .route("/create", post(add))
+        .route("/update/{mission_id}", patch(edit))
+        .route("/remove/{mission_id}", delete(remove))
         .route_layer(middleware::from_fn(authorization))
         .with_state(Arc::new(mission_management_use_case))
 }

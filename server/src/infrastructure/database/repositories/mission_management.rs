@@ -50,11 +50,9 @@ impl MissionManagementRepository for MissionManagementPostgres {
         update(missions::table)
             .filter(missions::id.eq(mission_id))
             .filter(missions::deleted_at.is_null())
+            .filter(missions::chief_id.eq(chief_id))
             .filter(missions::status.eq(MissionStatuses::Open.to_string()))
-            .set((
-                missions::deleted_at.eq(now),
-                missions::chief_id.eq(chief_id),
-            ))
+            .set(missions::deleted_at.eq(now))
             .execute(&mut conn)?;
 
         Ok(())

@@ -4,6 +4,8 @@ export interface Mission {
     description?: string;
     status: string;
     chief_id: number;
+    chief_name?: string;
+    chief_username?: string;
     crew_count: number;
     created_at: string;
     updated_at: string;

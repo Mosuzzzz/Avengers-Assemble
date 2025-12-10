@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MissionService } from '../_services/mission.service';
 import { Mission } from '../_models/mission';
 import { AccountService } from '../_services/account.service';
@@ -17,6 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class MissionDetails {
     route = inject(ActivatedRoute);
+    router = inject(Router);
     missionService = inject(MissionService);
     accountService = inject(AccountService);
     snackBar = inject(MatSnackBar);
@@ -24,6 +25,7 @@ export class MissionDetails {
     mission = signal<Mission | null>(null);
     participants = signal<any[]>([]); // Using any for now as BrawlerModel structure is known
     isJoined = signal<boolean>(false);
+    isChief = signal<boolean>(false);
 
     constructor() {
         const id = this.route.snapshot.paramMap.get('id');
@@ -36,6 +38,7 @@ export class MissionDetails {
         this.missionService.getMission(id).subscribe({
             next: (mission) => {
                 this.mission.set(mission);
+                this.isChief.set(mission.chief_username === this.accountService.user()?.username);
                 this.loadParticipants(id);
             },
             error: (err) => console.error(err)
@@ -54,27 +57,13 @@ export class MissionDetails {
     checkIfJoined(participants: any[]) {
         const currentUser = this.accountService.user();
         if (currentUser && currentUser.username) {
-            // Assuming participants list has a field that matches current user (e.g., username or display_name)
-            // Checking BrawlerModel from backend: display_name, avatar_url, etc.
-            // User model has username. Backend BrawlerModel has display_name.
-            // This might be tricky if we don't have ID.
-            // But wait, RegisterBrawlerEntity has username. BrawlerModel sent to client only has display_name.
-            // We might need to check if we can identify correctly.
-            // Let's assume display_name is unique enough or we rely on logic.
-            // Actually, the Token probably has ID (sub).
-            // UseCase uses ID. 
-            // The BrawlerModel response from get_mission_count doesn't show ID?
-            // Let's check backend view_file again if needed.
-            // For now, let's use display_name matching if available in User.
-            // User has username. Register sends display_name.
-            // Let's try to match display_name if possible. 
-            // If not optimal, we'll fix later.
-            const found = participants.some(p => p.display_name === currentUser.username || p.display_name === currentUser.username);
-            // NOTE: This logic is weak if display_name != username.
-            // Ideally we need Brawler ID.
-            // Proceeding with assumption.
-
+            const found = participants.some(p => p.username === currentUser.username);
             this.isJoined.set(found);
+            // Also re-verify isChief just in case
+            if (this.mission()) {
+                // mission.chief_name logic is already in loadMission, but we can double check or rely on it.
+                // Actually chief_name comes from mission detail.
+            }
         }
     }
 
@@ -99,6 +88,56 @@ export class MissionDetails {
                 this.loadParticipants(m.id);
             },
             error: (err) => this.snackBar.open('Failed to leave', 'Close', { duration: 3000 })
+        })
+    }
+
+    deleteMission() {
+        const m = this.mission();
+        if (!m) return;
+        if (confirm("Are you sure you want to delete this mission?")) {
+            this.missionService.deleteMission(m.id).subscribe({
+                next: () => {
+                    this.snackBar.open('Mission deleted', 'Close', { duration: 3000 });
+                    this.router.navigate(['/']);
+                },
+                error: (err) => this.snackBar.open('Failed to delete mission', 'Close', { duration: 3000 })
+            })
+        }
+    }
+
+    startMission() {
+        const m = this.mission();
+        if (!m) return;
+        this.missionService.startMission(m.id).subscribe({
+            next: () => {
+                this.snackBar.open('Mission started!', 'Close', { duration: 3000 });
+                this.loadMission(m.id);
+            },
+            error: (err) => this.snackBar.open('Failed to start mission: ' + err.error, 'Close', { duration: 3000 })
+        })
+    }
+
+    completeMission() {
+        const m = this.mission();
+        if (!m) return;
+        this.missionService.completeMission(m.id).subscribe({
+            next: () => {
+                this.snackBar.open('Mission completed!', 'Close', { duration: 3000 });
+                this.loadMission(m.id);
+            },
+            error: (err) => this.snackBar.open('Failed to complete mission', 'Close', { duration: 3000 })
+        })
+    }
+
+    failMission() {
+        const m = this.mission();
+        if (!m) return;
+        this.missionService.failMission(m.id).subscribe({
+            next: () => {
+                this.snackBar.open('Mission marked as failed', 'Close', { duration: 3000 });
+                this.loadMission(m.id);
+            },
+            error: (err) => this.snackBar.open('Failed to update mission', 'Close', { duration: 3000 })
         })
     }
 }

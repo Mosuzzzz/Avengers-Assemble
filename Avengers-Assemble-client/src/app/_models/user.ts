@@ -4,4 +4,5 @@ export interface User {
     token_type: string;
     expires_in: number;
     message?: string;
+    avatar_url?: string;
 }

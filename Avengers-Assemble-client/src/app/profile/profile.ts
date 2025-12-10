@@ -34,7 +34,7 @@ export class Profile {
     // Convert to Base64 (strip prefix)
     const reader = new FileReader();
     reader.onload = () => {
-      let base64 = reader.result as string;
+      let base64 = (reader.result as string).split(',')[1];
       // The backend likely expects just the base64 data, or maybe with prefix.
       // UploadedAvartar struct: pub base64_string: String.
       // Usually image/png;base64,... 
@@ -45,11 +45,13 @@ export class Profile {
       // Most libs handle data URI.
 
       this.accountService.uploadAvatar(base64).subscribe({
-        next: () => {
+        next: (response: any) => {
           this.snackBar.open('Avatar uploaded successfully', 'Close', { duration: 3000 });
-          // Update user avatar in local state if needed
-          // But user model in local storage might need update.
-          // Re-login or refresh user profile would be best.
+          const currentUser = this.accountService.user();
+          if (currentUser) {
+            const updatedUser = { ...currentUser, avatar_url: response.url };
+            this.accountService.setCurrentUser(updatedUser);
+          }
         },
         error: (err) => this.snackBar.open('Upload failed', 'Close', { duration: 3000 })
       });

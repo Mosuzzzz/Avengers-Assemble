@@ -3,6 +3,12 @@
   <span class="spacer"></span>
 
   @if (accountService.user()) {
+  @if(accountService.user()?.avatar_url) {
+  <img [src]="accountService.user()?.avatar_url" routerLink="/profile"
+    class="w-10 h-10 rounded-full object-cover mr-4 cursor-pointer">
+  } @else {
+  <button mat-button routerLink="/profile" class="mr-2">Profile</button>
+  }
   <span class="mr-4">Welcome, {{ accountService.user()?.username }}</span>
   <button mat-button (click)="logout()">Logout</button>
   } @else {

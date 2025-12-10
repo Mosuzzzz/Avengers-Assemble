@@ -27,10 +27,30 @@ export class MissionService {
     }
 
     joinMission(id: number) {
-        return this.http.post(`/api/crew/join/${id}`, {});
+        return this.http.post(`/api/crew/join/${id}`, {}, { responseType: 'text' });
     }
 
     leaveMission(id: number) {
-        return this.http.delete(`/api/crew/leave/${id}`);
+        return this.http.delete(`/api/crew/leave/${id}`, { responseType: 'text' });
+    }
+
+    createMission(mission: { name: string, description: string }) {
+        return this.http.post('/api/mission-management/create', mission);
+    }
+
+    deleteMission(id: number) {
+        return this.http.delete(`/api/mission-management/remove/${id}`, { responseType: 'text' });
+    }
+
+    startMission(id: number) {
+        return this.http.patch(`/api/mission/in-progress/${id}`, {}, { responseType: 'text' });
+    }
+
+    completeMission(id: number) {
+        return this.http.patch(`/api/mission/to-completed/${id}`, {}, { responseType: 'text' });
+    }
+
+    failMission(id: number) {
+        return this.http.patch(`/api/mission/to-failed/${id}`, {}, { responseType: 'text' });
     }
 }

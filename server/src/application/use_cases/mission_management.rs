@@ -62,15 +62,14 @@ where
         chief_id: i32,
         mut edit_mission_model: EditMissionModel,
     ) -> Result<i32> {
-
         if let Some(mission_name) = &edit_mission_model.name {
             if mission_name.trim().is_empty() {
                 edit_mission_model.name = None;
-            }else if mission_name.trim().len() < 3 {
+            } else if mission_name.trim().len() < 3 {
                 return Err(anyhow::anyhow!(
                     "Mission name must be at least 3 characters long."
                 ));
-            }else {
+            } else {
                 edit_mission_model.name = Some(mission_name.trim().to_string());
             }
         }
@@ -83,17 +82,6 @@ where
             }
         });
 
-
-        let crew_count = self
-            .mission_viewing_repository
-            .crew_counting(mission_id)
-            .await?;
-        if crew_count > 0 {
-            return Err(anyhow::anyhow!(
-                "Mission has been taken by brawler for now!"
-            ));
-        }
-
         let edit_mission_entity = edit_mission_model.to_entity(chief_id);
 
         let result = self
@@ -105,16 +93,6 @@ where
     }
 
     pub async fn remove(&self, mission_id: i32, chief_id: i32) -> Result<()> {
-        let crew_count = self
-            .mission_viewing_repository
-            .crew_counting(mission_id)
-            .await?;
-        if crew_count > 0 {
-            return Err(anyhow::anyhow!(
-                "Mission has been taken by brawler for now!"
-            ));
-        }
-
         self.mission_management_repository
             .remove(mission_id, chief_id)
             .await?;

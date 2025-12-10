@@ -4,7 +4,9 @@ use anyhow::Result;
 
 use crate::domain::{
     repositories::mission_viewing::MissionViewingRepository,
-    value_objects::{brawler_model::BrawlerModel, mission_filter::MissionFilter, mission_model::MissionModel},
+    value_objects::{
+        brawler_model::BrawlerModel, mission_filter::MissionFilter, mission_model::MissionModel,
+    },
 };
 pub struct MissionViewingUseCase<T>
 where
@@ -29,9 +31,15 @@ where
             .crew_counting(mission_id)
             .await?;
 
-        let model = self.mission_viewing_repository.get_one(mission_id).await?;
+        let (entity, chief_name, chief_username, chief_avatar_url) =
+            self.mission_viewing_repository.get_one(mission_id).await?;
 
-        let result = model.to_model(crew_count);
+        let result = entity.to_model(
+            crew_count,
+            Some(chief_name),
+            Some(chief_username),
+            chief_avatar_url,
+        );
 
         Ok(result)
     }
@@ -41,19 +49,24 @@ where
 
         let mut result = Vec::new();
 
-        for model in models.into_iter() {
+        for (entity, chief_name, chief_username, chief_avatar_url) in models.into_iter() {
             let crew_count = self
                 .mission_viewing_repository
-                .crew_counting(model.id)
+                .crew_counting(entity.id)
                 .await
                 .unwrap_or(0);
 
-            result.push(model.to_model(crew_count));
+            result.push(entity.to_model(
+                crew_count,
+                Some(chief_name),
+                Some(chief_username),
+                chief_avatar_url,
+            ));
         }
 
         Ok(result)
     }
-    
+
     pub async fn get_mission_count(&self, mission_id: i32) -> Result<Vec<BrawlerModel>> {
         let result = self
             .mission_viewing_repository

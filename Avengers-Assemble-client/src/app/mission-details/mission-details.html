@@ -3,7 +3,12 @@
     <mat-card class="mission-card">
         <mat-card-header>
             <mat-card-title class="text-2xl">{{ mission()?.name }}</mat-card-title>
-            <mat-card-subtitle>{{ mission()?.status }}</mat-card-subtitle>
+            <mat-card-subtitle>
+                <div class="flex gap-4">
+                    <span>Status: {{ mission()?.status }}</span>
+                    <span>Chief: {{ mission()?.chief_name || 'Unknown' }}</span>
+                </div>
+            </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content class="mt-4">
             <p class="text-lg text-gray-700">{{ mission()?.description || 'No description provided.' }}</p>
@@ -28,10 +33,22 @@
         </mat-card-content>
         <mat-card-actions align="end" class="gap-2">
             @if (accountService.user()) {
+            @if (isChief()) {
+            @if (mission()?.status === 'Open' || mission()?.status === 'Failed') {
+            <button mat-flat-button color="primary" (click)="startMission()">START MISSION</button>
+            }
+            @if (mission()?.status === 'InProgress') {
+            <button mat-flat-button color="accent" (click)="completeMission()">COMPLETE</button>
+            <button mat-flat-button color="warn" (click)="failMission()">FAIL</button>
+            }
+            <button mat-stroked-button color="warn" (click)="deleteMission()">DELETE</button>
+            } @else {
+            <!-- Non-chief logic -->
             @if (isJoined()) {
             <button mat-flat-button color="warn" (click)="leave()">LEAVE MISSION</button>
             } @else {
             <button mat-flat-button color="primary" (click)="join()">JOIN MISSION</button>
+            }
             }
             } @else {
             <p class="text-sm text-gray-500 mr-2">Login to join</p>

@@ -39,21 +39,34 @@ impl MissionViewingRepository for MissionViewingPostgres {
         Ok(count)
     }
 
-    async fn get_one(&self, mission_id: i32) -> Result<MissionEntity> {
+    async fn get_one(
+        &self,
+        mission_id: i32,
+    ) -> Result<(MissionEntity, String, String, Option<String>)> {
         let mut conn = Arc::clone(&self.db_pool).get()?;
         let result = missions::table
+            .inner_join(crate::infrastructure::database::schema::brawlers::table)
             .filter(missions::id.eq(mission_id))
             .filter(missions::deleted_at.is_null())
-            .select(MissionEntity::as_select())
-            .first::<MissionEntity>(&mut conn)?;
+            .select((
+                MissionEntity::as_select(),
+                crate::infrastructure::database::schema::brawlers::display_name,
+                crate::infrastructure::database::schema::brawlers::username,
+                crate::infrastructure::database::schema::brawlers::avatar_url,
+            ))
+            .first::<(MissionEntity, String, String, Option<String>)>(&mut conn)?;
 
         Ok(result)
     }
 
-    async fn get_all(&self, mission_filter: &MissionFilter) -> Result<Vec<MissionEntity>> {
+    async fn get_all(
+        &self,
+        mission_filter: &MissionFilter,
+    ) -> Result<Vec<(MissionEntity, String, String, Option<String>)>> {
         let mut conn = Arc::clone(&self.db_pool).get()?;
 
         let mut query = missions::table
+            .inner_join(crate::infrastructure::database::schema::brawlers::table)
             .filter(missions::deleted_at.is_null())
             .into_boxed();
 
@@ -66,9 +79,14 @@ impl MissionViewingRepository for MissionViewingPostgres {
         };
 
         let value = query
-            .select(MissionEntity::as_select())
+            .select((
+                MissionEntity::as_select(),
+                crate::infrastructure::database::schema::brawlers::display_name,
+                crate::infrastructure::database::schema::brawlers::username,
+                crate::infrastructure::database::schema::brawlers::avatar_url,
+            ))
             .order_by(missions::created_at.desc())
-            .load::<MissionEntity>(&mut conn)?;
+            .load::<(MissionEntity, String, String, Option<String>)>(&mut conn)?;
 
         Ok(value)
     }
@@ -77,9 +95,11 @@ impl MissionViewingRepository for MissionViewingPostgres {
 
         let sql = r#"
             SELECT 
-               COALESCE(b.avatar_url, '') AS avatar_url
-               COALESCE(s.success_count, 0) AS success_count,
-               COALESCE(j.joined_count, 0) AS joined_count,
+               b.display_name,
+               COALESCE(b.avatar_url, '') AS avatar_url,
+               b.username,
+               COALESCE(s.success_count, 0) AS mission_success_count,
+               COALESCE(j.joined_count, 0) AS mission_joined_count
             FROM 
                 crew_memberships cm
             INNER JOIN 

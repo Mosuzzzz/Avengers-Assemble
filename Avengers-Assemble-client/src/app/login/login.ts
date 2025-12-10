@@ -43,12 +43,6 @@ export class Login {
         Validators.minLength(4)
       ]),
 
-      display_name: new FormControl('', [
-        Validators.required,
-        Validators.maxLength(16),
-        Validators.minLength(4)
-      ]),
-
       password: new FormControl('', [
         Validators.required,
         PasswordValidator(8, 16)
@@ -104,7 +98,11 @@ export class Login {
   private updateForm(): void {
     if (this.mode === 'register') {
       this.form.addControl('confirm_password', new FormControl('', [Validators.required]))
-      this.form.addControl('display_name', new FormControl('', [Validators.required]))
+      this.form.addControl('display_name', new FormControl('', [
+        Validators.required,
+        Validators.maxLength(16),
+        Validators.minLength(4)
+      ]))
 
       this.form.addValidators(PasswordMatchValidator('password', 'confirm_password'))
     } else {
