@@ -2,7 +2,7 @@
     <mat-card>
         <mat-card-header>
             <mat-card-title>My Profile</mat-card-title>
-            <mat-card-subtitle>Manage your avatar</mat-card-subtitle>
+            <mat-card-subtitle>Manage your avatar and view your stats</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content class="flex flex-col items-center gap-4 mt-6">
 
@@ -17,6 +17,26 @@
                 </div>
                 }
             </div>
+
+            @if (profileData()) {
+            <div class="w-full space-y-2">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold">{{ profileData()!.display_name }}</h2>
+                    <p class="text-gray-600">&#64;{{ profileData()!.username }}</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div class="bg-blue-50 p-4 rounded-lg text-center">
+                        <div class="text-3xl font-bold text-blue-600">{{ profileData()!.mission_success_count }}</div>
+                        <div class="text-sm text-gray-600">Missions Completed</div>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg text-center">
+                        <div class="text-3xl font-bold text-green-600">{{ profileData()!.mission_joined_count }}</div>
+                        <div class="text-sm text-gray-600">Missions Joined</div>
+                    </div>
+                </div>
+            </div>
+            }
 
             <div class="w-full">
                 <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden" #fileInput>

@@ -58,4 +58,11 @@ where
 
         Ok(uploaded_image)
     }
+
+    pub async fn get_profile(
+        &self,
+        brawler_id: i32,
+    ) -> Result<crate::domain::value_objects::brawler_model::BrawlerModel> {
+        self.brawler_repository.get_profile(brawler_id).await
+    }
 }

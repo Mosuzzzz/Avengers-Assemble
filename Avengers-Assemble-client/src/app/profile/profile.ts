@@ -1,9 +1,18 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { AccountService } from '../_services/account.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+interface ProfileData {
+  display_name: string;
+  avatar_url: string;
+  username: string;
+  mission_success_count: number;
+  mission_joined_count: number;
+}
 
 @Component({
   selector: 'app-profile',
@@ -11,11 +20,39 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './profile.html',
   styleUrl: './profile.css',
 })
-export class Profile {
+export class Profile implements OnInit {
   accountService = inject(AccountService);
   snackBar = inject(MatSnackBar);
+  router = inject(Router);
   selectedFile: File | null = null;
   previewUrl = signal<string | null>(null);
+  profileData = signal<ProfileData | null>(null);
+
+  ngOnInit() {
+    // Check if user is logged in
+    if (!this.accountService.user()) {
+      this.snackBar.open('Please login to view your profile', 'Close', { duration: 3000 });
+      this.router.navigate(['/login']);
+      return;
+    }
+    this.loadProfile();
+  }
+
+  loadProfile() {
+    this.accountService.getProfile().subscribe({
+      next: (data: any) => {
+        console.log('Profile data received:', data);
+        this.profileData.set(data);
+        if (data.avatar_url) {
+          this.previewUrl.set(data.avatar_url);
+        }
+      },
+      error: (err) => {
+        console.error('Profile load error:', err);
+        this.snackBar.open('Failed to load profile', 'Close', { duration: 3000 });
+      }
+    });
+  }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -52,6 +89,8 @@ export class Profile {
             const updatedUser = { ...currentUser, avatar_url: response.url };
             this.accountService.setCurrentUser(updatedUser);
           }
+          // Reload profile to get updated avatar
+          this.loadProfile();
         },
         error: (err) => this.snackBar.open('Upload failed', 'Close', { duration: 3000 })
       });

@@ -71,4 +71,8 @@ export class AccountService {
     uploadAvatar(base64: string) {
         return this.http.post(this.baseUrl + '/brawlers/avatar', { base64_string: base64 });
     }
+
+    getProfile() {
+        return this.http.get(this.baseUrl + '/brawlers/profile');
+    }
 }

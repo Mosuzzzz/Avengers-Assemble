@@ -5,4 +5,7 @@ export interface User {
     expires_in: number;
     message?: string;
     avatar_url?: string;
+    display_name?: string;
+    mission_success_count?: number;
+    mission_joined_count?: number;
 }
