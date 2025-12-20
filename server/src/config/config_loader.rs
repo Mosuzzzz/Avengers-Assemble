@@ -62,7 +62,6 @@ pub fn get_jwt_env() -> Result<JwtEnv> {
     })
 }
 
-
 pub fn get_cloundinary_env() -> Result<CloudinaryEnv> {
     dotenvy::dotenv().ok();
 
