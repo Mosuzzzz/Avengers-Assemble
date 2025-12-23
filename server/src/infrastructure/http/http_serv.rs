@@ -13,7 +13,6 @@ use tower_http::{
     cors::{Any, CorsLayer},
     limit::RequestBodyLimitLayer,
     services::{ServeDir, ServeFile},
-    timeout::TimeoutLayer,
     trace::TraceLayer,
 };
 use tracing::info;
@@ -33,12 +32,11 @@ fn static_serve() -> Router {
 
 fn api_serve(db_pool: Arc<PgPoolSquad>) -> Router {
     Router::new()
+        .nest("/brawlers", routers::brawlers::routes(Arc::clone(&db_pool)))
         .nest(
-            "/brawlers", 
-            routers::brawlers::routes(Arc::clone(&db_pool)))
-        .nest(
-            "/authentication", 
-            routers::authentication::routes(Arc::clone(&db_pool)))
+            "/authentication",
+            routers::authentication::routes(Arc::clone(&db_pool)),
+        )
         .nest(
             "/mission-management",
             routers::mission_management::routes(Arc::clone(&db_pool)),
@@ -64,9 +62,10 @@ pub async fn start(config: Arc<DotEnvyConfig>, db_pool: Arc<PgPoolSquad>) -> Res
         .nest("/api", api_serve(Arc::clone(&db_pool)))
         // .fallback(default_router::health_check)
         // .route("/health_check", get(routers::default::health_check))
-        .layer(TimeoutLayer::new(Duration::from_secs(
-            config.server.timeout,
-        )))
+        .layer(tower_http::timeout::TimeoutLayer::with_status_code(
+            StatusCode::REQUEST_TIMEOUT,
+            Duration::from_secs(config.server.timeout),
+        ))
         .layer(RequestBodyLimitLayer::new(
             (config.server.body_limit * 1024 * 1024).try_into()?,
         ))

@@ -1,79 +1,79 @@
-use anyhow::Result;
+    use anyhow::Result;
 
-use crate::config::{
-    config_model::{CloudinaryEnv, Database, DotEnvyConfig, JwtEnv, Server},
-    stage::Stage,
-};
-
-pub fn load() -> Result<DotEnvyConfig> {
-    dotenvy::dotenv().ok();
-
-    let server = Server {
-        port: std::env::var("SERVER_PORT")
-            .expect("SERVER_PORT is valid")
-            .parse()?,
-        body_limit: std::env::var("SERVER_BODY_LIMIT")
-            .expect("SERVER_BODY_LIMIT is valid")
-            .parse()?,
-        timeout: std::env::var("SERVER_TIMEOUT")
-            .expect("SERVER_TIMEOUT is valid")
-            .parse()?,
+    use crate::config::{
+        config_model::{CloudinaryEnv, Database, DotEnvyConfig, JwtEnv, Server},
+        stage::Stage,
     };
 
-    let database = Database {
-        url: std::env::var("DATABASE_URL")
-            .expect("DATABASE_URL is valid")
-            .parse()?,
-    };
+    pub fn load() -> Result<DotEnvyConfig> {
+        dotenvy::dotenv().ok();
 
-    let secret = std::env::var("JWT_USER_SECRET")
-        .expect("SECRET is valid")
-        .parse()?;
+        let server = Server {
+            port: std::env::var("SERVER_PORT")
+                .expect("SERVER_PORT is valid")
+                .parse()?,
+            body_limit: std::env::var("SERVER_BODY_LIMIT")
+                .expect("SERVER_BODY_LIMIT is valid")
+                .parse()?,
+            timeout: std::env::var("SERVER_TIMEOUT")
+                .expect("SERVER_TIMEOUT is valid")
+                .parse()?,
+        };
 
-    let config = DotEnvyConfig {
-        server,
-        database,
-        secret,
-    };
+        let database = Database {
+            url: std::env::var("DATABASE_URL")
+                .expect("DATABASE_URL is valid")
+                .parse()?,
+        };
 
-    Ok(config)
-}
+        let secret = std::env::var("JWT_USER_SECRET")
+            .expect("SECRET is valid")
+            .parse()?;
 
-pub fn get_stage() -> Stage {
-    dotenvy::dotenv().ok();
+        let config = DotEnvyConfig {
+            server,
+            database,
+            secret,
+        };
 
-    let stage_str = std::env::var("STAGE").unwrap_or("".to_string());
-    Stage::try_form(&stage_str).unwrap_or_default()
-}
+        Ok(config)
+    }
 
-pub fn get_jwt_env() -> Result<JwtEnv> {
-    dotenvy::dotenv().ok();
+    pub fn get_stage() -> Stage {
+        dotenvy::dotenv().ok();
 
-    let secret = std::env::var("JWT_USER_SECRET")
-        .expect("JWT_USER_SECRET is valid")
-        .parse()?;
+        let stage_str = std::env::var("STAGE").unwrap_or("".to_string());
+        Stage::try_form(&stage_str).unwrap_or_default()
+    }
 
-    let life_time_days = std::env::var("JWT_LIFE_TIME_DAYS")?
-        .parse::<i64>()?;
+    pub fn get_jwt_env() -> Result<JwtEnv> {
+        dotenvy::dotenv().ok();
 
-    Ok(JwtEnv {
-        secret,
-        life_time_days,
-    })
-}
+        let secret = std::env::var("JWT_USER_SECRET")
+            .expect("JWT_USER_SECRET is valid")
+            .parse()?;
 
-pub fn get_cloundinary_env() -> Result<CloudinaryEnv> {
-    dotenvy::dotenv().ok();
+        let life_time_days = std::env::var("JWT_LIFE_TIME_DAYS")?
+            .parse::<i64>()?;
 
-    let cloud_name = std::env::var("CLOUDINARY_CLOUD_NAME")?;
+        Ok(JwtEnv {
+            secret,
+            life_time_days,
+        })
+    }
 
-    let api_key = std::env::var("CLOUDINARY_API_KEY")?;
+    pub fn get_cloundinary_env() -> Result<CloudinaryEnv> {
+        dotenvy::dotenv().ok();
 
-    let api_secret = std::env::var("CLOUDINARY_API_SECRET")?;
+        let cloud_name = std::env::var("CLOUDINARY_CLOUD_NAME")?;
 
-    Ok(CloudinaryEnv {
-        cloud_name,
-        api_key,
-        api_secret,
-    })
-}
+        let api_key = std::env::var("CLOUDINARY_API_KEY")?;
+
+        let api_secret = std::env::var("CLOUDINARY_API_SECRET")?;
+
+        Ok(CloudinaryEnv {
+            cloud_name,
+            api_key,
+            api_secret,
+        })
+    }
