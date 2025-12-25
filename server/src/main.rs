@@ -20,6 +20,7 @@ async fn main() {
         }
     };
 
+
     info!(".ENV LOADED");
 
     let postgres_pool = match postgresql_connection::establish_connection(&dotenvy_env.database.url)
