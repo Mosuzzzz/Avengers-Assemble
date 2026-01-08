@@ -63,7 +63,7 @@ pub async fn get_mission_count<T>(
 where
     T: MissionViewingRepository + Send + Sync,
 {
-    match mission_viewing_use_case.get_mission_count(mission_id).await {
+    match mission_viewing_use_case.get_mission_crew(mission_id).await {
         Ok(brawler_models) => (StatusCode::OK, Json(brawler_models)).into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }

@@ -72,7 +72,7 @@ impl MissionViewingRepository for MissionViewingPostgres {
 
         Ok(value)
     }
-    async fn get_mission_count(&self, mission_id: i32) -> Result<Vec<BrawlerModel>> {
+    async fn get_mission_crew(&self, mission_id: i32) -> Result<Vec<BrawlerModel>> {
         let mut conn = Arc::clone(&self.db_pool).get()?;
 
         let sql = r#"
