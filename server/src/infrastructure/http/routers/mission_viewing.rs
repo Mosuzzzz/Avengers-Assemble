@@ -26,7 +26,7 @@ pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
     Router::new()
         .route("/{mission_id}", get(view_details))
         .route("/gets", get(gets))
-        .route("/count/{mission_id}", get(get_mission_count))
+        .route("/count/{mission_id}", get(get_mission_crew))
         .with_state(Arc::new(use_case))
 }
 
@@ -56,7 +56,7 @@ where
     }
 }
 
-pub async fn get_mission_count<T>(
+pub async fn get_mission_crew<T>(
     State(mission_viewing_use_case): State<Arc<MissionViewingUseCase<T>>>,
     Path(mission_id): Path<i32>,
 ) -> impl IntoResponse
