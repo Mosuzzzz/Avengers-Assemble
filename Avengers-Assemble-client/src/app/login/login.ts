@@ -1,10 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton, MatAnchor } from "@angular/material/button";
 import { PasswordValidator } from '../_helpers/password.validator';
 import { PasswordMatchValidator } from '../_helpers/password-match.validator';
+import { Router } from '@angular/router';
+import { PassportService } from '../_service/passport-service';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +27,9 @@ export class Login {
     confirm_password: signal(''),
     display_name: signal('')
   }
+
+  private _router = inject(Router)
+  private _passport = inject(PassportService)
 
   constructor() {
     this.form = new FormGroup({
@@ -128,4 +133,14 @@ export class Login {
         break
     }
   }
+
+  async onsubmit(){
+    if(this.mode === 'login'){
+      const errMsg = await this._passport.get(this.form.value)
+      if(!errMsg) this._router.navigate(['/'])
+    }else {
+      const errMsg = await this._passport.register(this.form.value)
+      if(!errMsg) this._router.navigate(['/'])
+    }
+  } 
 }
