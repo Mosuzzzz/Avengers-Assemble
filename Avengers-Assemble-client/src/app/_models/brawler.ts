@@ -5,13 +5,6 @@ export interface Brawler {
     mission_join_count: number
 }
 
-export interface Passport {
-    token_type:string,
-    access_token:string,
-    expires_in:number,
-    display_name:string,
-    arvatar_url?:string
-}
 
 export interface LoginData{
     username:string

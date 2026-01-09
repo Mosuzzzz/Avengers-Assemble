@@ -1,0 +1,129 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700");
+
+:root {
+  --pin-size: 5vmin;
+  --main-wrapper-font-size: 15vmin;
+  --main-wrapper-background-color: #ffffff;
+  --signboard-wrapper-width: 75vmin;
+  --signboard-wrapper-height: 55vmin;
+  --signboard-margin: 20px;
+  --signboard-wrapper-transform-origin: center calc(var(--pin-size) / 2);
+  --signboard-wrapper-init-time: 1000ms;
+  --signboard-wrapper-init-sign-move-time: 1000ms;
+  --signboard-wrapper-sign-move-time: 3000ms;
+  --signboard-wrapper-sign-move-delay-time: calc(var(--signboard-wrapper-init-time) + var(--signboard-wrapper-init-sign-move-time));
+  --signboard-wrapper-rotation-degree: 3deg;
+  --signboard-wrapper-border-radius: 4vmin;
+  --signboard-color: #ffffff;
+  --signboard-background-color: #ff5625;
+  --signboard-height: 35vmin;
+  --signboard-text-shadow-color: #cc3d1e; /* darken(#ff5625, 20%) */
+  --signboard-box-shadow: 0 2vmin 4vmin 1vmin rgba(107, 107, 107, 0.8);
+  --string-width: 30vmin;
+  --string-height: 30vmin;
+  --string-border-width: 0.9vmin;
+  --string-border-color: #893d00;
+  --pin-width: var(--pin-size);
+  --pin-height: var(--pin-size);
+  --pin-pin1-background-color: #9f9f9f;
+  --pin-pin2-3-background-color: #cc3d1e; /* darken(#ff5625, 15%) */
+  --pin-pin2-3-x: 13vmin;
+  --pin-pin2-3-y: 21.5vmin;
+}
+
+.main-wrapper {
+  font-size: var(--main-wrapper-font-size);
+  background-color: var(--main-wrapper-background-color);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signboard-wrapper {
+  width: var(--signboard-wrapper-width);
+  height: var(--signboard-wrapper-height);
+  margin: var(--signboard-margin);
+  position: relative;
+  flex-shrink: 0;
+  transform-origin: var(--signboard-wrapper-transform-origin);
+  animation:
+    var(--signboard-wrapper-init-time) init forwards,
+    var(--signboard-wrapper-init-sign-move-time) init-sign-move ease-out var(--signboard-wrapper-init-time),
+    var(--signboard-wrapper-sign-move-time) sign-move var(--signboard-wrapper-sign-move-delay-time) infinite;
+}
+
+.signboard-wrapper .signboard {
+  color: var(--signboard-color);
+  font-family: "Open Sans", sans-serif;
+  font-weight: bold;
+  background-color: var(--signboard-background-color);
+  width: 100%;
+  height: var(--signboard-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  border-radius: var(--signboard-wrapper-border-radius);
+  text-shadow: 0 -0.015em var(--signboard-text-shadow-color);
+  box-shadow: var(--signboard-box-shadow);
+}
+
+.signboard-wrapper .string {
+  width: var(--string-width);
+  height: var(--string-height);
+  border: solid var(--string-border-width) var(--string-border-color);
+  border-bottom: none;
+  border-right: none;
+  position: absolute;
+  left: 50%;
+  transform-origin: top left;
+  transform: rotate(45deg);
+}
+
+.signboard-wrapper .pin {
+  width: var(--pin-width);
+  height: var(--pin-height);
+  position: absolute;
+  border-radius: 50%;
+}
+
+.signboard-wrapper .pin.pin1 {
+  background-color: var(--pin-pin1-background-color);
+  top: 0;
+  left: calc(50% - calc(var(--pin-width) / 2));
+}
+
+.signboard-wrapper .pin.pin2,
+.signboard-wrapper .pin.pin3 {
+  background-color: var(--pin-pin2-3-background-color);
+  top: var(--pin-pin2-3-y);
+}
+
+.signboard-wrapper .pin.pin2 {
+  left: var(--pin-pin2-3-x);
+}
+
+.signboard-wrapper .pin.pin3 {
+  right: var(--pin-pin2-3-x);
+}
+
+@keyframes init {
+  0%   { transform: scale(0); }
+  40%  { transform: scale(1.1); }
+  60%  { transform: scale(0.9); }
+  80%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes init-sign-move {
+  100% { transform: rotate(var(--signboard-wrapper-rotation-degree)); }
+}
+
+@keyframes sign-move {
+  0%   { transform: rotate(var(--signboard-wrapper-rotation-degree)); }
+  50%  { transform: rotate(calc(-1 * var(--signboard-wrapper-rotation-degree))); }
+  100% { transform: rotate(var(--signboard-wrapper-rotation-degree)); }
+}
