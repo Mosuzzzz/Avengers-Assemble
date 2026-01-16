@@ -39,12 +39,6 @@ export class Login {
         Validators.minLength(4)
       ]),
 
-      display_name: new FormControl('', [
-        Validators.required,
-        Validators.maxLength(16),
-        Validators.minLength(4)
-      ]),
-
       password: new FormControl('', [
         Validators.required,
         PasswordValidator(8, 16)
@@ -58,18 +52,24 @@ export class Login {
     this.updateForm()
   }
 
+  private _matchValidator = PasswordMatchValidator('password', 'confirm_password');
+
   private updateForm(): void {
     if (this.mode === 'register') {
       this.form.addControl('confirm_password', new FormControl('', [Validators.required]))
-      this.form.addControl('display_name', new FormControl('', [Validators.required]))
+      this.form.addControl('display_name', new FormControl('', [
+        Validators.required,
+        Validators.maxLength(16),
+        Validators.minLength(4)
+      ]))
 
-      this.form.addValidators(PasswordMatchValidator('password', 'confirm_password'))
+      this.form.addValidators(this._matchValidator)
     } else {
       this.form.removeControl('confirm_password')
       this.form.removeControl('display_name')
+      this.form.removeValidators(this._matchValidator)
     }
-
-    this.form.removeValidators(PasswordMatchValidator('password', 'confirm_password'))
+    this.form.updateValueAndValidity();
   }
 
   updateErrorMessage(ctrlName: string): void {
@@ -134,13 +134,14 @@ export class Login {
     }
   }
 
-  async onsubmit(){
-    if(this.mode === 'login'){
-      const errMsg = await this._passport.get(this.form.value)
-      if(!errMsg) this._router.navigate(['/'])
-    }else {
-      const errMsg = await this._passport.register(this.form.value)
-      if(!errMsg) this._router.navigate(['/'])
+  async onSubmit() {
+    if (this.mode === 'login') {
+      const errMsg = await this._passport.get(this.form.value);
+      if (!errMsg) this._router.navigate(['/'])
+    } else {
+      const errMsg = await this._passport.register(this.form.value);
+      if (!errMsg) this._router.navigate(['/'])
     }
-  } 
+  }
 }
+

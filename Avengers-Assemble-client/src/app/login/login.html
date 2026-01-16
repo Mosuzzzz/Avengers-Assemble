@@ -5,7 +5,7 @@
       <p class="subtitle">{{ mode === 'login' ? 'Please sign in to continue' : 'Sign up to get started' }}</p>
     </div>
 
-    <form [formGroup]="form" autocomplete="off" class="login-form">
+    <form [formGroup]="form" autocomplete="off" class="login-form" (ngSubmit)="onSubmit()">
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Username</mat-label>
