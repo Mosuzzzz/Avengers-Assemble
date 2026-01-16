@@ -25,13 +25,16 @@ export class Login {
     username: signal(''),
     password: signal(''),
     confirm_password: signal(''),
-    display_name: signal('')
+    display_name: signal(''),
+    server: signal('')
   }
 
   private _router = inject(Router)
   private _passport = inject(PassportService)
 
   constructor() {
+    if (this._passport.data()) this._router.navigate(['/'])
+
     this.form = new FormGroup({
       username: new FormControl('', [
         Validators.required,
@@ -135,12 +138,19 @@ export class Login {
   }
 
   async onSubmit() {
+    this.errorMessage.server.set('')
     if (this.mode === 'login') {
       const errMsg = await this._passport.get(this.form.value);
+      console.log(errMsg)
       if (!errMsg) this._router.navigate(['/'])
     } else {
       const errMsg = await this._passport.register(this.form.value);
       if (!errMsg) this._router.navigate(['/'])
+    }
+
+    if (!this.errorMessage) this._router.navigate(['/'])
+    else {
+      this.errorMessage.server.set('')
     }
   }
 }

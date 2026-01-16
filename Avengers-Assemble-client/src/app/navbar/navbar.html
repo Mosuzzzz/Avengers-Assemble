@@ -1,8 +1,13 @@
 <mat-toolbar class="my-navbar">
-  <span>My-app</span>
-  <span class="spacer"></span>
-  <button matButton>
-    <span>Login</span>
-    
+  <button routerLink="/">
+    My-app
   </button>
+  <span class="spacer"></span>
+  <button mat-button [matMenuTriggerFor]="menu">
+    menu
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/profile">Profile</button>
+    <button mat-menu-item (click)="logout()">Log-out</button>
+  </mat-menu>
 </mat-toolbar>

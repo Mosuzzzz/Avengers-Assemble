@@ -50,8 +50,10 @@
       <button mat-flat-button color="primary" type="submit" class="submit-btn" [disabled]="!form.valid">
         {{ mode === 'login' ? 'Log In' : 'Sign Up' }}
       </button>
+      @if (errorMessage.server() !== '') {
+      <span class="error">{{errorMessage.server()}}</span>
+      }
     </form>
-
     <div class="login-footer">
       <div class="divider">
         <span>or</span>

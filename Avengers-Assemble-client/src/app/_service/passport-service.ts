@@ -10,6 +10,10 @@ import { isPlatformBrowser } from "@angular/common"
   providedIn: 'root'
 })
 export class PassportService {
+  destroy() {
+    localStorage.removeItem(this._key)
+    this.data.set(undefined)
+  }
   private _key = 'passport'
   private _base_url = environment.baseUrl + '/api'
 
@@ -32,6 +36,8 @@ export class PassportService {
 
       const passport = JSON.parse(jsonString) as Passport
       this.data.set(passport)
+      console.log(passport)
+
       return null
     } catch (error) {
       return `${error}`
@@ -68,10 +74,15 @@ export class PassportService {
   }
 
   private async fetchPassport(api_url: string, model: LoginData | RegisterData) {
-    const result$ = this._http.post<Passport>(api_url, model)
-    const passport = await firstValueFrom(result$)
-
-    this.data.set(passport)
-    this.savePassportToLocalStorage()
+    try {
+      const result = this._http.post<Passport>(api_url, model)
+      const passport = await firstValueFrom(result)
+      this.data.set(passport)
+      this.savePassportToLocalStorage()
+      return null
+    } catch (error: any) {
+      console.error(error)
+      return error.error
+    }
   }
 }
