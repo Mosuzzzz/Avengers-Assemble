@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 .container {
   display: flex;
   flex-direction: column;
@@ -8,4 +10,17 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+}
+
+/* Custom Snackbar Styles */
+.snack-bar-error {
+  --mdc-snackbar-container-color: #ef4444 !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+  --mat-snack-bar-button-color: white !important;
+}
+
+.snack-bar-success {
+  --mdc-snackbar-container-color: #10b981 !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+  --mat-snack-bar-button-color: white !important;
 }

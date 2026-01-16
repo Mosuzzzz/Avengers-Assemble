@@ -33,6 +33,7 @@ export class Navbar {
 
   constructor() {
     this.display_name = computed(() => this._passport.data()?.display_name)
+    console.log(this.display_name)
     this.avatar_url = computed(() => getAvatarUrl(this._passport.data()))
   }
 

@@ -10,10 +10,7 @@ import { isPlatformBrowser } from "@angular/common"
   providedIn: 'root'
 })
 export class PassportService {
-  destroy() {
-    localStorage.removeItem(this._key)
-    this.data.set(undefined)
-  }
+
   private _key = 'passport'
   private _base_url = environment.baseUrl + '/api'
 
@@ -35,11 +32,18 @@ export class PassportService {
       if (!jsonString) return 'notfound'
 
       const passport = JSON.parse(jsonString) as Passport
+
+      // Check if the passport has the required display_name (handles stale data)
+      if (!passport.display_name) {
+        this.destroy()
+        return 'invalid_data'
+      }
+
       this.data.set(passport)
-      console.log(passport)
 
       return null
     } catch (error) {
+      this.destroy()
       return `${error}`
     }
   }
@@ -84,5 +88,9 @@ export class PassportService {
       console.error(error)
       return error.error
     }
+  }
+  destroy() {
+    localStorage.removeItem(this._key)
+    this.data.set(undefined)
   }
 }
