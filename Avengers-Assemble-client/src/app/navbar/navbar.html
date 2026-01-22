@@ -3,14 +3,14 @@
         LoL
     </span>
     <span class="spacer"></span>
-    @if (display_name()) {
-    <button matButton [matMenuTriggerFor]="menu">
-        <img src="{{avatar_url()}}" alt="user avatar" class="avatar">
+    <button [matMenuTriggerFor]="menu">
+        <img [src]="avatar_url()" class="avatar">
         {{display_name()}}
+        <mat-icon>expand_more</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
         <button mat-menu-item class="menu-button" routerLink="/profile">Profile</button>
         <button mat-menu-item class="menu-button" (click)="logout()">Log-out</button>
     </mat-menu>
-    }
+
 </mat-toolbar>

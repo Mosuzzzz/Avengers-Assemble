@@ -15,6 +15,15 @@ export class PassportService {
 
   data = signal<undefined | Passport>(undefined)
 
+  saveAvatarImageUrl(url:string){ 
+    let passport = this.data()
+    if(passport){
+      passport.avatar_url = url
+      this.data.set(passport)
+      this.savePassportToLocalStorage()
+    }
+  }
+
   private loadPassportFormLocalStorage(): string | null {
     const jsonString = localStorage.getItem(this._key)
     if (!jsonString) return 'not found'
@@ -49,7 +58,7 @@ export class PassportService {
   }
 
   async register(register: RegisterModel): Promise<null | string> {
-    const api_url = this._base_url + '/brawler/register'
+    const api_url = this._base_url + '/brawlers/register'
     return await this.fetchPassport(api_url, register)
   }
 

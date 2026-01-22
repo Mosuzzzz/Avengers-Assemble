@@ -18,8 +18,8 @@ export class Login {
   private usernameMinLength = 4
   private usernameMaxLength = 10
 
-  private passwordMinLength = 8
-  private passwordMaxLength = 10
+  private passwordMinLength = 6
+  private passwordMaxLength = 12
 
   private displaynameMinLength = 3
 
