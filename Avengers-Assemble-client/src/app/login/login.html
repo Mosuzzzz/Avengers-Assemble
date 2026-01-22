@@ -1,70 +1,75 @@
-<div class="login-page">
-  <div class="login-card">
-    <div class="login-header">
-      <h2>{{ mode === 'login' ? 'Welcome Back' : 'Create Account' }}</h2>
-      <p class="subtitle">{{ mode === 'login' ? 'Please sign in to continue' : 'Sign up to get started' }}</p>
-    </div>
+<div class="login-container">
 
-    <form [formGroup]="form" autocomplete="off" class="login-form" (ngSubmit)="onSubmit()">
+    <mat-card class="example-card" appearance="outlined">
+        <mat-card-header>
+            <mat-card-title>
+                <h3>{{mode.toLocaleUpperCase()}}</h3>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <form (ngSubmit)="onSubmit()" [formGroup]="form" autocomplete="off">
+                <!-- Username -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Username</mat-label>
+                    <input matInput type="text" (input)="updateErrorMsg('username')" formControlName="username"
+                        placeholder="type your username here">
+                    @if (form.controls['username'].invalid) {
+                    <mat-error>{{errorMsg.username()}}</mat-error>
+                    }
+                </mat-form-field>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Username</mat-label>
-        <input matInput type="text" placeholder="Enter your username" (input)="updateErrorMessage('username')"
-          formControlName="username" />
-        @if (form.controls['username'].invalid) {
-        <mat-error>{{ errorMessage.username() }}</mat-error>
-        }
-      </mat-form-field>
+                <!-- Password -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" (input)="updateErrorMsg('password')" formControlName="password"
+                        placeholder="type your password here">
+                    @if (form.controls['password'].invalid) {
+                    <mat-error>{{errorMsg.password()}}</mat-error>
+                    }
+                </mat-form-field>
 
-      @if (mode === 'register') {
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Display Name</mat-label>
-        <input matInput type="text" placeholder="Enter your display name" (input)="updateErrorMessage('display_name')"
-          formControlName="display_name" />
-        @if (form.controls['display_name'].invalid) {
-        <mat-error>{{ errorMessage.display_name() }}</mat-error>
-        }
-      </mat-form-field>
-      }
+                @if (mode !== 'login') {
+                <!-- Confirm Password -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Confirm Password</mat-label>
+                    <input matInput type="password" (input)="updateErrorMsg('cf_password')"
+                        formControlName="cf_password" placeholder="type your password here">
+                    @if (form.controls['cf_password'].invalid) {
+                    <mat-error>{{errorMsg.cf_password()}}</mat-error>
+                    }
+                </mat-form-field>
 
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Password</mat-label>
-        <input matInput type="password" placeholder="Enter your password" (input)="updateErrorMessage('password')"
-          formControlName="password" />
-        @if (form.controls['password'].invalid) {
-        <mat-error>{{ errorMessage.password() }}</mat-error>
-        }
-      </mat-form-field>
+                <!-- Display name -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Aka</mat-label>
+                    <input matInput type="text" (input)="updateErrorMsg('displayname')" formControlName="display_name"
+                        placeholder="type your aka here">
+                    @if (form.controls['display_name'].invalid) {
+                    <mat-error>{{errorMsg.displayname()}}</mat-error>
+                    }
+                </mat-form-field>
+                }
 
-      @if (mode === 'register') {
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Confirm Password</mat-label>
-        <input matInput type="password" placeholder="Confirm your password"
-          (input)="updateErrorMessage('confirm_password')" formControlName="confirm_password" />
-        @if (form.controls['confirm_password'].invalid) {
-        <mat-error>{{ errorMessage.confirm_password() }}</mat-error>
-        }
-      </mat-form-field>
-      }
+                <button (click)="onSubmit()" type="submit" class="blue" matButton="outlined" [disabled]="!form.valid">
+                    @if(mode==='login'){
+                    Login
+                    }
+                    @if(mode!=='login'){
+                    Get Start
+                    }
+                </button>
+                @if (errorMsg.server() !== '') {
+                <span class="error">{{errorMsg.server()}}</span>
+                }
+            </form>
+            <div class="login-spacer">or</div>
+            @if (mode === 'login') {
+            <div class="toggle">New to Brawler? <span (click)="toggleMode()">Sign Up</span></div>
+            }
+            @if (mode !== 'login') {
+            <div class="toggle">Already have an account? <span (click)="toggleMode()">Sign In</span></div>
+            }
+        </mat-card-content>
 
-      <button mat-flat-button color="primary" type="submit" class="submit-btn" [disabled]="!form.valid">
-        {{ mode === 'login' ? 'Log In' : 'Sign Up' }}
-      </button>
-      @if (errorMessage.server() !== '') {
-      <span class="error">{{errorMessage.server()}}</span>
-      }
-    </form>
-    <div class="login-footer">
-      <div class="divider">
-        <span>or</span>
-      </div>
-      <div class="toggle-text">
-        @if (mode === 'login') {
-        New here? <span class="action-link" (click)="toggleMode()">Create an account</span>
-        } @else {
-        Already have an account? <span class="action-link" (click)="toggleMode()">Log in</span>
-        }
-      </div>
-    </div>
-  </div>
+    </mat-card>
 </div>

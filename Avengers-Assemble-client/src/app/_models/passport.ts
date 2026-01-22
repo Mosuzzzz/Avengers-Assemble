@@ -1,7 +1,15 @@
 export interface Passport {
-    token_type: string,
-    access_token: string,
-    expires_in: number,
+    token: string,
     display_name: string,
     avatar_url?: string
+}
+
+export interface RegisterModel {
+    username: string
+    password: string
+    display_name: string
+}
+export interface LoginModel {
+    username: string
+    password: string
 }

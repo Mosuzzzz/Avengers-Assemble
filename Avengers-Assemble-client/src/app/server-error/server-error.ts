@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'
 
 @Component({
   selector: 'app-server-error',
   imports: [],
   templateUrl: './server-error.html',
-  styleUrl: './server-error.css',
+  styleUrl: './server-error.scss',
 })
 export class ServerError {
-
+  //todo: slide 2 p.16
 }

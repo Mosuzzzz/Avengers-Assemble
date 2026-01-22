@@ -1,18 +1,19 @@
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'
 
 @Component({
   selector: 'app-spinner',
   imports: [],
   templateUrl: './spinner.html',
-  styleUrl: './spinner.css',
+  styleUrl: './spinner.scss',
 })
 export class Spinner {
   isLoading = false
 
-  show(){
-    this.isLoading=true
+  show() {
+    this.isLoading = true
   }
-  hide(){
-    this.isLoading=false
+
+  hide() {
+    this.isLoading = false
   }
 }

@@ -1,157 +1,128 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatButton, MatAnchor } from "@angular/material/button";
-import { PasswordValidator } from '../_helpers/password.validator';
-import { PasswordMatchValidator } from '../_helpers/password-match.validator';
-import { Router } from '@angular/router';
-import { PassportService } from '../_service/passport-service';
+import { Component, inject, signal } from '@angular/core'
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
+import { PasswordMatchValidator, PasswordValidator } from '../_helpers/password-validator'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
+import { MatButtonModule } from '@angular/material/button'
+import { MatCardModule } from '@angular/material/card'
+import { Router } from '@angular/router'
+import { PassportService } from '../_services/passport-service'
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatLabel, MatInput, MatAnchor, MatButton],
-
+  imports: [MatCardModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './login.html',
-  styleUrl: './login.css',
+  styleUrl: './login.scss',
 })
-
 export class Login {
-  mode: 'login' | 'register' = 'login'
+  private usernameMinLength = 4
+  private usernameMaxLength = 10
+
+  private passwordMinLength = 8
+  private passwordMaxLength = 10
+
+  private displaynameMinLength = 3
+
+  mode: 'login' | ' register' = 'login'
   form: FormGroup
 
-
-  errorMessage = {
+  errorMsg = {
     username: signal(''),
     password: signal(''),
-    confirm_password: signal(''),
-    display_name: signal(''),
-    server: signal('')
+    cf_password: signal(''),
+    displayname: signal(''),
+    server: signal(''),
   }
 
   private _router = inject(Router)
   private _passport = inject(PassportService)
 
   constructor() {
-    if (this._passport.data()) this._router.navigate(['/'])
-
+    if (this._passport.data())
+      this._router.navigate(['/'])
     this.form = new FormGroup({
-      username: new FormControl('', [
+      username: new FormControl(null, [
         Validators.required,
-        Validators.maxLength(16),
-        Validators.minLength(4)
+        Validators.minLength(this.usernameMinLength),
+        Validators.maxLength(this.usernameMaxLength),
       ]),
-
-      password: new FormControl('', [
+      password: new FormControl(null, [
         Validators.required,
-        PasswordValidator(8, 16)
+        PasswordValidator(this.passwordMinLength, this.passwordMaxLength)
       ])
     })
   }
 
-
   toggleMode() {
-    this.mode = this.mode === 'login' ? 'register' : 'login'
+    this.mode = this.mode === 'login' ? ' register' : 'login'
     this.updateForm()
   }
 
-  private _matchValidator = PasswordMatchValidator('password', 'confirm_password');
+  updateForm() {
+    if (this.mode === 'login') {
+      this.form.removeControl('cf_password')
+      this.form.removeValidators(PasswordMatchValidator('password', 'cf_password'))
 
-  private updateForm(): void {
-    if (this.mode === 'register') {
-      this.form.addControl('confirm_password', new FormControl('', [Validators.required]))
-      this.form.addControl('display_name', new FormControl('', [
-        Validators.required,
-        Validators.maxLength(16),
-        Validators.minLength(4)
-      ]))
-
-      this.form.addValidators(this._matchValidator)
-    } else {
-      this.form.removeControl('confirm_password')
       this.form.removeControl('display_name')
-      this.form.removeValidators(this._matchValidator)
+    } else {
+      this.form.addControl('cf_password', new FormControl(null, [Validators.required]))
+      this.form.addValidators(PasswordMatchValidator('password', 'cf_password'))
+
+      this.form.addControl('display_name', new FormControl(null, [Validators.required, Validators.minLength(this.displaynameMinLength)]))
     }
-    this.form.updateValueAndValidity();
   }
 
-  updateErrorMessage(ctrlName: string): void {
-    const control = this.form.controls[ctrlName]
-    if (!control) return
+  updateErrorMsg(ctrlName: string): void | null {
+    const ctrl = this.form.controls[ctrlName]
+    if (!ctrl) return null
+
     switch (ctrlName) {
       case 'username':
-        if (control.hasError('required')) this.errorMessage.username.set('required')
-        else if (control.hasError('minlength')) {
-          this.errorMessage.username.set('must be at least 4 characters long')
-        }
-        else if (control.hasError('maxlength')) {
-          this.errorMessage.username.set('must be  16 characters or less')
-        }
-        else this.errorMessage.username.set('')
+        if (ctrl.hasError('required')) this.errorMsg.username.set('required')
+
+        else if (ctrl.hasError('minlength')) this.errorMsg.username.set(`must be at least ${this.usernameMinLength} characters long`)
+
+        else if (ctrl.hasError('maxlength')) this.errorMsg.username.set(`must be  ${this.usernameMaxLength} characters or fewer`)
+
+        else this.errorMsg.username.set('')
 
         break
+
       case 'password':
-        if (control.hasError('required')) this.errorMessage.password.set('required')
-
-        else if (control.hasError('invalidMinLength')) {
-          this.errorMessage.password.set(`must be at least 8 characters long`)
-        }
-        else if (control.hasError('invalidMaxLength')) {
-          this.errorMessage.password.set(`must be 16 characters or less`)
-        }
-        else if (control.hasError('invalidLowcase')) {
-          this.errorMessage.password.set('must contain at least one lowercase letter')
-        }
-        else if (control.hasError('invalidUppercase')) {
-          this.errorMessage.password.set('must contain at least one uppercase letter')
-        }
-        else if (control.hasError('invalidNumberic')) {
-          this.errorMessage.password.set('must contain at least one number')
-        }
-        else if (control.hasError('invalidSpacialChar')) {
-          this.errorMessage.password.set('must contain at least one special character: !@#$%^&*(),.?":{}|<>')
-        }
-        else this.errorMessage.password.set('')
-
+        if (ctrl.hasError('required')) this.errorMsg.password.set('required')
+        else if (ctrl.hasError('invalidLength')) this.errorMsg.password.set(`must be ${this.passwordMinLength} - ${this.passwordMaxLength} characters long`)
+        else if (ctrl.hasError('invalidLowerCase')) this.errorMsg.password.set(`must contain minimum of 1 lower-case letter [a-z]`)
+        else if (ctrl.hasError('invalidUpperCase')) this.errorMsg.password.set(`must contain minimum of 1 upper-case letter [A-Z]`)
+        else if (ctrl.hasError('invalidNumeric')) this.errorMsg.password.set(`must contain minimum of 1 numeric [0-9]`)
+        else if (ctrl.hasError('invalidSpecialChar')) this.errorMsg.password.set(`must contain minimum of 1 special character [!@#$%^&*(),.?:{}|<>]`)
+        else this.errorMsg.password.set('')
         break
-      case 'confirm_password':
-        if (control.hasError('required')) this.errorMessage.confirm_password.set('required')
 
-        else if (control.hasError('mismatch')) {
-          this.errorMessage.confirm_password.set('passwords do not match')
-        }
-        else this.errorMessage.confirm_password.set('')
+      case 'cf_password':
+        if (ctrl.hasError('required')) this.errorMsg.cf_password.set('required')
+        else if (ctrl.hasError('mismatch')) this.errorMsg.cf_password.set('do not match password')
+        else this.errorMsg.cf_password.set('')
         break
+
       case 'display_name':
-        if (control.hasError('required')) this.errorMessage.display_name.set('required')
-
-        else if (control.hasError('minlength')) {
-          this.errorMessage.display_name.set('must be at least 4 characters long')
-        }
-        else if (control.hasError('maxlength')) {
-          this.errorMessage.display_name.set('must be  16 characters or less')
-        }
-        else this.errorMessage.display_name.set('')
-
+        if (ctrl.hasError('required')) this.errorMsg.displayname.set('required')
+        else if (ctrl.hasError('minlength')) this.errorMsg.displayname.set(`must be at least ${this.displaynameMinLength} characters long`)
+        else this.errorMsg.displayname.set('')
         break
     }
   }
 
   async onSubmit() {
-    this.errorMessage.server.set('')
+    this.errorMsg.server.set('')
+    let errMsg: string | null = null
     if (this.mode === 'login') {
-      const errMsg = await this._passport.get(this.form.value);
-      console.log(errMsg)
-      if (!errMsg) this._router.navigate(['/'])
+      errMsg = await this._passport.get(this.form.value)
     } else {
-      const errMsg = await this._passport.register(this.form.value);
-      if (!errMsg) this._router.navigate(['/'])
+      errMsg = await this._passport.register(this.form.value)
     }
-
-    if (!this.errorMessage) this._router.navigate(['/'])
+    if (!errMsg) this._router.navigate(['/'])
     else {
-      this.errorMessage.server.set('')
+      this.errorMsg.server.set(errMsg)
     }
   }
 }
-
