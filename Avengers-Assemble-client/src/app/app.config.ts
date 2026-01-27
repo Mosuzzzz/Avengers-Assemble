@@ -6,6 +6,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { jwtInterceptor } from './_helpers/jwt.interceptor';
 import { errorInterceptor } from './_helpers/error.interceptor';
+import { loadingInterceptor } from './_interceptors/loading-interceptor';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
@@ -13,6 +14,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([errorInterceptor, jwtInterceptor])), provideAnimationsAsync()
+    provideHttpClient(withFetch(), withInterceptors([loadingInterceptor, errorInterceptor, jwtInterceptor])), provideAnimationsAsync()
   ]
 };

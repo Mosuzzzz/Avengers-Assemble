@@ -3,14 +3,21 @@
   <span class="spacer"></span>
 
   @if (accountService.user()) {
-  @if(accountService.user()?.avatar_url) {
-  <img [src]="accountService.user()?.avatar_url" routerLink="/profile"
-    class="w-10 h-10 rounded-full object-cover mr-4 cursor-pointer">
-  } @else {
-  <button mat-button routerLink="/profile" class="mr-2">Profile</button>
-  }
-  <span class="mr-4">Welcome, {{ accountService.user()?.username }}</span>
-  <button mat-button (click)="logout()">Logout</button>
+  <div class="user-profile-trigger cursor-pointer" [matMenuTriggerFor]="menu">
+    @if(accountService.user()?.avatar_url) {
+      <img [src]="accountService.user()?.avatar_url" class="w-20 h-20 border-2 border-white rounded-full">
+    } @else {
+      <img src="assets/default.avatar.jpg" class="w-20 h-20 border-2 border-white rounded-full">
+    }
+    <span class="ml-2 font-medium">{{ accountService.user()?.display_name || accountService.user()?.username }}</span>
+    <mat-icon>expand_more</mat-icon>
+  </div>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/profile">Profile</button>
+    <button mat-menu-item (click)="logout()">Logout</button>
+  </mat-menu>
+
   } @else {
   <button mat-button routerLink="/login" routerLinkActive="active">Login</button>
   }

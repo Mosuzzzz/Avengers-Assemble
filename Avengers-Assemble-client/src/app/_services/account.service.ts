@@ -26,8 +26,25 @@ export class AccountService {
             const userString = localStorage.getItem('user');
             if (userString) {
                 this.user.set(JSON.parse(userString));
+                // Fetch fresh profile in background
+                this.fetchProfile();
             }
         }
+    }
+
+    fetchProfile() {
+        this.http.get<User>(this.baseUrl + '/brawlers/me', {
+            headers: { 'X-Skip-Loading': 'true' }
+        }).subscribe({
+            next: (profile) => {
+                const currentUser = this.user();
+                if (currentUser) {
+                    // Update user with fresh data while keeping token
+                    this.setCurrentUser({ ...currentUser, ...profile });
+                }
+            },
+            error: (err) => console.error('Failed to fetch profile', err)
+        });
     }
 
     login(model: any) {
