@@ -11,9 +11,7 @@ export class ServerError {
   private _router = inject(Router)
   errorMsg: string | undefined | null = undefined
 
-  constructor(){
+  constructor() {
     this.errorMsg = this._router.currentNavigation()?.extras.state?.['error'] as string
   }
-
-
 }

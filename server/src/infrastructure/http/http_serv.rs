@@ -6,7 +6,7 @@ use axum::{
     http::{
         Method, StatusCode,
         header::{AUTHORIZATION, CONTENT_TYPE},
-    }, routing::get,
+    },
 };
 use tokio::net::TcpListener;
 use tower_http::{
@@ -19,7 +19,10 @@ use tracing::info;
 
 use crate::{
     config::config_model::DotEnvyConfig,
-    infrastructure::{database::postgresql_connection::PgPoolSquad, http::routers::{self, default::{health_check, make_error}}},
+    infrastructure::{
+        database::postgresql_connection::PgPoolSquad,
+        http::routers::{self},
+    },
 };
 
 fn static_serve() -> Router {
@@ -32,37 +35,38 @@ fn static_serve() -> Router {
 
 fn api_serve(db_pool: Arc<PgPoolSquad>) -> Router {
     Router::new()
-        .nest("/brawlers", routers::brawlers::routes(Arc::clone(&db_pool)))
+        .nest("/brawler", routers::brawlers::routes(Arc::clone(&db_pool)))
         .nest(
-            "/authentication",
-            routers::authentication::routes(Arc::clone(&db_pool)),
-        )
-        .nest(
-            "/mission-management",
-            routers::mission_management::routes(Arc::clone(&db_pool)),
-        )
-        .nest(
-            "/crew",
-            routers::crew_operation::routes(Arc::clone(&db_pool)),
+            "/view",
+            routers::mission_viewing::routes(Arc::clone(&db_pool)),
         )
         .nest(
             "/mission",
             routers::mission_operation::routes(Arc::clone(&db_pool)),
         )
         .nest(
-            "/view",
-            routers::mission_viewing::routes(Arc::clone(&db_pool)),
+            "/crew",
+            routers::crew_operation::routes(Arc::clone(&db_pool)),
         )
+        .nest(
+            "/mission-management",
+            routers::mission_management::routes(Arc::clone(&db_pool)),
+        )
+        .nest(
+            "/authentication",
+            routers::authentication::routes(Arc::clone(&db_pool)),
+        )
+        .nest("/util", routers::default_router::routes())
         .fallback(|| async { (StatusCode::NOT_FOUND, "API not found") })
 }
 
 pub async fn start(config: Arc<DotEnvyConfig>, db_pool: Arc<PgPoolSquad>) -> Result<()> {
     let app = Router::new()
         .merge(static_serve())
-        .nest("/api", api_serve(Arc::clone(&db_pool)))
+        .nest("/api", api_serve(db_pool))
         // .fallback(default_router::health_check)
-        .route("/health_check", get(health_check))
-        .route("/make-error/{code}", get(make_error))
+        // .route("/health_check", get(default_router::health_check)
+        // .route("/make-error", get(default_router::make_error)
         .layer(tower_http::timeout::TimeoutLayer::with_status_code(
             StatusCode::REQUEST_TIMEOUT,
             Duration::from_secs(config.server.timeout),

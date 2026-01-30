@@ -18,12 +18,12 @@ export class Login {
   private usernameMinLength = 4
   private usernameMaxLength = 10
 
-  private passwordMinLength = 6
-  private passwordMaxLength = 12
+  private passwordMinLength = 8
+  private passwordMaxLength = 10
 
   private displaynameMinLength = 3
 
-  mode: 'login' | ' register' = 'login'
+  mode: 'login' | 'register' = 'login'
   form: FormGroup
 
   errorMsg = {
@@ -33,6 +33,8 @@ export class Login {
     displayname: signal(''),
     server: signal(''),
   }
+
+  loading = signal(false)
 
   private _router = inject(Router)
   private _passport = inject(PassportService)
@@ -54,7 +56,7 @@ export class Login {
   }
 
   toggleMode() {
-    this.mode = this.mode === 'login' ? ' register' : 'login'
+    this.mode = this.mode === 'login' ? 'register' : 'login'
     this.updateForm()
   }
 
@@ -113,6 +115,9 @@ export class Login {
   }
 
   async onSubmit() {
+    if (this.loading()) return
+    this.loading.set(true)
+
     this.errorMsg.server.set('')
     let errMsg: string | null = null
     if (this.mode === 'login') {
@@ -120,6 +125,9 @@ export class Login {
     } else {
       errMsg = await this._passport.register(this.form.value)
     }
+
+    this.loading.set(false)
+
     if (!errMsg) this._router.navigate(['/'])
     else {
       this.errorMsg.server.set(errMsg)

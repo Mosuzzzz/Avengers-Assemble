@@ -18,7 +18,6 @@ CREATE TABLE brawlers (
     updated_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
-
 CREATE TABLE crew_memberships (
     mission_id INTEGER NOT NULL,
     brawler_id INTEGER NOT NULL,

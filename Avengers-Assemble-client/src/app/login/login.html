@@ -50,7 +50,7 @@
                 </mat-form-field>
                 }
 
-                <button (click)="onSubmit()" type="submit" class="blue" matButton="outlined" [disabled]="!form.valid">
+                <button type="submit" class="blue" matButton="outlined" [disabled]="loading() || !form.valid">
                     @if(mode==='login'){
                     Login
                     }

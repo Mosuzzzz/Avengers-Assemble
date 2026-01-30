@@ -1,0 +1,23 @@
+
+
+.typewriter {
+    width: 24ch;
+    animation: typing 2s steps(30), blink .5s step-end infinite alternate;
+    white-space: nowrap;
+    overflow: hidden;
+    font-family: monospace;
+}
+
+@keyframes typing {
+    from {
+        width: 0
+    }
+}
+
+.show-more-button:hover{
+    cursor: pointer;
+        color: white;
+        background: rgb(8, 111, 8);
+        transform: scale(1.05);
+        transition: 0.5s;
+    }

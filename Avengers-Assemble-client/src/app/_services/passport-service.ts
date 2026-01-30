@@ -3,6 +3,8 @@ import { inject, Injectable, signal } from '@angular/core'
 import { environment } from '../../environments/environment' ///
 import { LoginModel, Passport, RegisterModel } from '../_models/passport'
 import { firstValueFrom } from 'rxjs'
+import { H } from '@angular/cdk/keycodes'
+import { getAvatarUrl } from '../_helpers/util'
 
 @Injectable({
   providedIn: 'root',
@@ -11,14 +13,15 @@ export class PassportService {
   private _key = 'passport'
   private _base_url = environment.baseUrl + '/api'
   private _http = inject(HttpClient)
-  // constructor(private _http: HttpClient) { }
 
   data = signal<undefined | Passport>(undefined)
+  avatar = signal<string>("")
 
-  saveAvatarImageUrl(url:string){ 
+  saveAvatarImgUrl(url: string) {
     let passport = this.data()
-    if(passport){
+    if (passport) {
       passport.avatar_url = url
+      this.avatar.set(url)
       this.data.set(passport)
       this.savePassportToLocalStorage()
     }
@@ -30,6 +33,8 @@ export class PassportService {
     try {
       const passport = JSON.parse(jsonString) as Passport
       this.data.set(passport)
+      const avatar = getAvatarUrl(passport)
+      this.avatar.set(avatar)
     } catch (error) {
       return `${error}`
     }
@@ -49,6 +54,7 @@ export class PassportService {
 
   destroy() {
     this.data.set(undefined)
+    this.avatar.set("")
     localStorage.removeItem(this._key)
   }
 
@@ -58,7 +64,7 @@ export class PassportService {
   }
 
   async register(register: RegisterModel): Promise<null | string> {
-    const api_url = this._base_url + '/brawlers/register'
+    const api_url = this._base_url + '/brawler/register'
     return await this.fetchPassport(api_url, register)
   }
 

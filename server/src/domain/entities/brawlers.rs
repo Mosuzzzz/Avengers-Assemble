@@ -1,9 +1,6 @@
-
-
-use crate::{infrastructure::{ database::{ schema::brawlers}}};
+use crate::infrastructure::database::schema::brawlers;
 use chrono::NaiveDateTime;
 use diesel::{Selectable, prelude::*};
-
 
 #[derive(Debug, Clone, Identifiable, Selectable, Queryable)]
 #[diesel(table_name = brawlers)]
@@ -25,4 +22,3 @@ pub struct RegisterBrawlerEntity {
     pub password: String,
     pub display_name: String,
 }
-

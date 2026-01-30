@@ -3,13 +3,12 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { PassportService } from '../_services/passport-service'
 import { MatMenuModule } from '@angular/material/menu'
-import { MatIconModule } from '@angular/material/icon'
 import { getAvatarUrl } from '../_helpers/util'
 import { Router, RouterLink, RouterLinkActive } from "@angular/router"
 
 @Component({
   selector: 'app-navbar',
-  imports: [MatToolbarModule, MatButtonModule, MatMenuModule, RouterLink, RouterLinkActive, MatIconModule],
+  imports: [MatToolbarModule, MatButtonModule, MatMenuModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
@@ -21,7 +20,7 @@ export class Navbar {
 
   constructor() {
     this.display_name = computed(() => this._passport.data()?.display_name)
-    this.avatar_url = computed(() => getAvatarUrl(this._passport.data()))
+    this.avatar_url = computed(() => this._passport.avatar())
   }
 
   logout() {

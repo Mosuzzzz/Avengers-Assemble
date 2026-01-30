@@ -1,16 +1,30 @@
-<mat-toolbar class="my-navbar">
-    <span class="home-btn" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
-        LoL
-    </span>
-    <span class="spacer"></span>
-    <button [matMenuTriggerFor]="menu">
-        <img [src]="avatar_url()" class="avatar">
-        {{display_name()}}
-        <mat-icon>expand_more</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-        <button mat-menu-item class="menu-button" routerLink="/profile">Profile</button>
-        <button mat-menu-item class="menu-button" (click)="logout()">Log-out</button>
-    </mat-menu>
+<nav class="w-full flex content-center justify-center bg-transparent">
+    <div class="flex content-center justify-center ">
+        <div class="my-navbar w-[600px] h-12 flex content-center justify-around rounded-full bg-[#232323] mt-5">
 
-</mat-toolbar>
+            <span class="home-btn self-center font-bold" routerLink="/" routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact:true}">
+                Home
+            </span>
+            @if(avatar_url()){
+            <button class="menu-button" routerLink="/missions" routerLinkActive="active">Missions</button>
+            <button class="menu-button" routerLink="/chief" routerLinkActive="active">My Missions</button>
+            }
+
+
+
+            @if (avatar_url()) {
+            <div class="flex row-auto justify-center content-center">
+                <button matButton [matMenuTriggerFor]="menu" class="flex content-center self-center">
+                    <img src="{{avatar_url()}}" alt="user avatar" class="avatar flex self-center border-red-50 border">
+                </button>
+             
+            </div>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item class="menu-button" routerLink="/profile">Profile</button>
+                <button mat-menu-item class="menu-button" (click)="logout()">Log-out</button>
+            </mat-menu>
+            }
+        </div>
+    </div>
+</nav>

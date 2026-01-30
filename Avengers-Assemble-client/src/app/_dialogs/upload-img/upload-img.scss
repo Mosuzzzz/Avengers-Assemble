@@ -1,7 +1,6 @@
 input[type="file"] {
-    // visibility: hidden;
+    visibility: hidden;
 }
-
 
 .content-container {
     display: flex;
@@ -13,17 +12,14 @@ input[type="file"] {
     margin: 0;
 }
 
-
 .image-preview {
     width: 25rem;
     margin: 0;
 }
 
-
 .image-preview img {
     width: 100%;
 }
-
 
 .error-msg {
     color: rgb(105, 10, 10);

@@ -1,5 +1,5 @@
-export function fileToBase64(file:File) :Promise<string>{
-    return new Promise((resolve,reject)=> {
+export function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = () => {
             const base64 = reader.result as string
@@ -9,7 +9,6 @@ export function fileToBase64(file:File) :Promise<string>{
         reader.onerror = (e) => {
             reject(e)
         }
-
         reader.readAsDataURL(file)
     })
 }
