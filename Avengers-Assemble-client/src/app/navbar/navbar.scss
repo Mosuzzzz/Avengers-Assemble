@@ -1,39 +1,69 @@
-
 .my-navbar {
     display: flex;
     align-content: center;
     color: #b3b3b3;
+}
 
+.nav:has(.dropdown.active) {
+    height: 200px;
+    transform: scale(1.05);
+    transition: 0.5s;
 
-    button {
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        border: none;
-        background: none;
+    .my-navbar {
+        border-radius: 10px;
     }
 
-    .menu-button:hover{
-        color: white;
-        transform: scale(1.05);
-        transition: 0.5s;
+    .menu-button-burger {
+        display: inline;
     }
+}
 
-    
+.nav {
+    height: 75px;
+    transition: 0.2s;
+}
 
-    .home-btn {
-        cursor: pointer;
-        color: white;
+// .my-navbar:has(.dropdown:hover){
+//     height: 200px;
+//     border-radius: 10px;
 
-    }
+// }
+
+button {
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.menu-button-burger {
+    display: none;
+}
+
+
+.menu-button:hover,.home-btn:hover,
+.menu-button-burger:hover {
+    color: white;
+    transform: scale(1.05);
+    transition: 0.5s;
+}
 
 
 
-    .avatar {
-        margin-right: 5px;
-        width: 35px;
-        height:35px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
+
+.menu-button.active,
+.home-btn.active {
+    color: white;
+    font-weight: bold;
+}
+
+
+
+.avatar {
+    margin-right: 5px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
 }

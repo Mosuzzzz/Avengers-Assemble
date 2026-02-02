@@ -35,6 +35,7 @@ diesel::table! {
         #[max_length = 255]
         status -> Varchar,
         chief_id -> Int4,
+        avatar_url -> Nullable<Varchar>,
         created_at -> Timestamp,
         updated_at -> Timestamp,
         deleted_at -> Nullable<Timestamp>,

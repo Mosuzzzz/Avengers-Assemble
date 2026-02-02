@@ -66,4 +66,13 @@ where
         let missions = self.brawler_repository.get_missions(brawler_id).await?;
         Ok(missions)
     }
+
+    pub async fn update_display_name(
+        &self,
+        brawler_id: i32,
+        display_name: String,
+    ) -> Result<()> {
+        self.brawler_repository.update_display_name(brawler_id, display_name).await?;
+        Ok(())
+    }
 }

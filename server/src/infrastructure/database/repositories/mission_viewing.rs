@@ -47,15 +47,14 @@ SELECT m.id,
         m.status,
         m.chief_id,
         COALESCE(b.display_name, '') AS chief_display_name,
-        COUNT(cm.brawler_id) AS crew_count,
+        b.avatar_url AS chief_avatar_url,
+        (SELECT COUNT(*) FROM crew_memberships cm WHERE cm.mission_id = m.id) AS crew_count,
         m.created_at,
         m.updated_at
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
-LEFT JOIN crew_memberships cm ON cm.mission_id = m.id
 WHERE m.deleted_at IS NULL
     AND m.id = $1
-GROUP BY m.id, b.display_name, m.name, m.description, m.status, m.chief_id, m.created_at, m.updated_at
 LIMIT 1
         "#;
 
@@ -78,16 +77,15 @@ SELECT m.id,
         m.status,
         m.chief_id,
         COALESCE(b.display_name, '') AS chief_display_name,
-        COUNT(cm.brawler_id) AS crew_count,
+        b.avatar_url AS chief_avatar_url,
+        (SELECT COUNT(*) FROM crew_memberships cm WHERE cm.mission_id = m.id) AS crew_count,
         m.created_at,
         m.updated_at
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
-LEFT JOIN crew_memberships cm ON cm.mission_id = m.id
 WHERE m.deleted_at IS NULL
     AND ($1::varchar IS NULL OR m.status = $1)
     AND ($2::varchar IS NULL OR m.name ILIKE $2)
-GROUP BY m.id, b.display_name, m.name, m.description, m.status, m.chief_id, m.created_at, m.updated_at
 ORDER BY m.created_at DESC
         "#;
 
@@ -105,7 +103,8 @@ ORDER BY m.created_at DESC
 
     async fn get_crew(&self, mission_id: i32) -> Result<Vec<BrawlerModel>> {
         let sql = r#"
-            SELECT b.display_name,
+            SELECT b.id,
+                    b.display_name,
                     COALESCE(b.avatar_url, '') AS avatar_url,
                     COALESCE(s.success_count, 0) AS mission_success_count,
                     COALESCE(j.joined_count, 0) AS mission_joined_count

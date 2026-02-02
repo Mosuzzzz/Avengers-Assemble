@@ -22,14 +22,18 @@ body {
   // Set a default background, font and text colors for the application using
   // Angular Material's system-level CSS variables. Learn more about these
   // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
+  background-color: #fafafa;
+  background-image:
+    linear-gradient(to right, transparent, #fafafa),
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 100% 100%, 20px 20px, 20px 20px;
+  background-attachment: fixed;
   color: var(--mat-sys-on-surface);
 
   // Reset the user agent margin.
   margin: 0;
   height: 100%;
-}
-body {
   font-family: "Anthro Trial Medium", "Anthro Trial Medium Placeholder", sans-serif;
 }
 

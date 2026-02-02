@@ -1,0 +1,99 @@
+@let m = mission();
+<div class="flex flex-col max-w-lg bg-white rounded-lg shadow-xl overflow-hidden">
+    <div class="px-6 py-4 flex justify-between items-center">
+        <h4 class="text-xl font-bold tracking-tight">Mission Details</h4>
+        <span class="cursor-pointer text-black hover:text-gray-400 text-2xl px-4 transition-colors"
+            [mat-dialog-close]="true">
+            x
+        </span>
+    </div>
+    <div class="px-6 py-4 space-y-6">
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <span
+                    class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded uppercase tracking-wider">
+                    ID: {{m.id}}
+                </span>
+                <span [class]="getStatusClass(m.status)">
+                    {{m.status}}
+                </span>
+            </div>
+            <h1 class="text-3xl font-extrabold text-gray-900 border-b pb-2">{{m.name}}</h1>
+        </div>
+        <div>
+            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Description</h3>
+            <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                {{m.description}}
+            </p>
+        </div>
+        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+            <div class="space-y-1">
+                <h4 class="text-xs font-medium text-gray-400 uppercase">Chief</h4>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center cursor-pointer"
+                        [matTooltip]="m.chief_display_name">
+                        @if (m.chief_avatar_url) {
+                        <img [src]="m.chief_avatar_url" [alt]="m.chief_display_name" class="w-full h-full object-cover">
+                        } @else {
+                        <span class="text-sm font-semibold text-gray-600">{{m.chief_display_name.charAt(0)}}</span>
+                        }
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800">{{m.chief_display_name}}</span>
+                </div>
+            </div>
+            <div class="space-y-1 text-right">
+                <h4 class="text-xs font-medium text-gray-400 uppercase">Crew Members</h4>
+                <div class="flex items-center justify-end gap-2">
+                    <span class="text-lg font-bold text-gray-900">{{m.crew_count}}</span>
+                    <span class="text-xs text-gray-500">active brawlers</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-between gap-10 items-center text-[10px] text-gray-400 pt-2 border-t border-gray-50">
+            <span>Created: {{m.created_at | date:'medium'}}</span>
+            <span>Last Updated: {{m.updated_at | date:'medium'}}</span>
+        </div>
+        <div class="px-6 py-4 flex flex-row-reverse gap-3">
+            @if (display_name() === m.chief_display_name) {
+            @if (m.status === 'Open') {
+            <button (click)="editMission(m)"
+                class="px-5 py-2 border border-gray-300 text-gray-700 text-sm font-semibold rounded-md hover:bg-white hover:border-black transition-all">
+                Edit Mission
+            </button>
+            <button (click)="deleteMission(m)" [mat-dialog-close]="true"
+                class="px-5 py-2 text-red-600 text-sm font-semibold rounded-md hover:bg-red-50">
+                Delete Mission
+            </button>
+            <button (click)="startMission(m)" [mat-dialog-close]="true"
+                class="px-5 py-2 text-green-600 text-sm font-semibold rounded-md hover:bg-green-50">
+                Start
+            </button>
+            }@else if(m.status === 'InProgress'){
+            <button (click)="completedMission(m)" [mat-dialog-close]="true"
+                class="px-5 py-2 text-green-600 text-sm font-semibold rounded-md hover:bg-green-50">
+                Completed
+            </button>
+            <button (click)="failedMission(m)" [mat-dialog-close]="true"
+                class="px-5 py-2 text-red-600 text-sm font-semibold rounded-md hover:bg-red-50">
+                Failed
+            </button>
+            }
+
+            }@else {
+            @if (isMember()) {
+            @if (m.status === 'Open') {
+            <button (click)="leaveMission(m)"
+                class="px-5 py-2 text-red-600 text-sm font-semibold rounded-md hover:bg-red-50">
+                Leave
+            </button>
+            }
+            } @else if (m.status === 'Open') {
+            <button (click)="joinMission(m)"
+                class="px-5 py-2 text-green-600 text-sm font-semibold rounded-md hover:bg-green-50">
+                Join
+            </button>
+            }
+            }
+        </div>
+    </div>
+</div>

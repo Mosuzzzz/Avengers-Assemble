@@ -23,7 +23,7 @@ export class Login {
 
   private displaynameMinLength = 3
 
-  mode: 'login' | 'register' = 'login'
+  mode: 'Login' | 'Register' = 'Login'
   form: FormGroup
 
   errorMsg = {
@@ -56,12 +56,12 @@ export class Login {
   }
 
   toggleMode() {
-    this.mode = this.mode === 'login' ? 'register' : 'login'
+    this.mode = this.mode === 'Login' ? 'Register' : 'Login'
     this.updateForm()
   }
 
   updateForm() {
-    if (this.mode === 'login') {
+    if (this.mode === 'Login') {
       this.form.removeControl('cf_password')
       this.form.removeValidators(PasswordMatchValidator('password', 'cf_password'))
 
@@ -120,7 +120,7 @@ export class Login {
 
     this.errorMsg.server.set('')
     let errMsg: string | null = null
-    if (this.mode === 'login') {
+    if (this.mode === 'Login') {
       errMsg = await this._passport.get(this.form.value)
     } else {
       errMsg = await this._passport.register(this.form.value)

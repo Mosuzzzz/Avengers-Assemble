@@ -3,8 +3,7 @@ import { inject, Injectable, signal } from '@angular/core'
 import { environment } from '../../environments/environment' ///
 import { LoginModel, Passport, RegisterModel } from '../_models/passport'
 import { firstValueFrom } from 'rxjs'
-import { H } from '@angular/cdk/keycodes'
-import { getAvatarUrl } from '../_helpers/util'
+
 
 @Injectable({
   providedIn: 'root',
@@ -27,14 +26,22 @@ export class PassportService {
     }
   }
 
+
+  updateDisplayName(displayName: string) {
+    let passport = this.data()
+    if (passport) {
+      passport.display_name = displayName
+      this.data.set({ ...passport })
+      this.savePassportToLocalStorage()
+    }
+  }
+
   private loadPassportFormLocalStorage(): string | null {
     const jsonString = localStorage.getItem(this._key)
     if (!jsonString) return 'not found'
     try {
       const passport = JSON.parse(jsonString) as Passport
       this.data.set(passport)
-      const avatar = getAvatarUrl(passport)
-      this.avatar.set(avatar)
     } catch (error) {
       return `${error}`
     }
@@ -76,8 +83,6 @@ export class PassportService {
       this.savePassportToLocalStorage()
       return null
     } catch (error: any) {
-      // console.error(error)
-      // console.log(error.error)
       return error.error
     }
 

@@ -1,6 +1,6 @@
 use diesel::{
     prelude::QueryableByName,
-    sql_types::{Integer, VarChar},
+    sql_types::{BigInt, Integer, Varchar},
 };
 use serde::{Deserialize, Serialize};
 
@@ -25,12 +25,19 @@ impl RegisterBrawlerModel {
 
 #[derive(Debug, Clone, Serialize, Deserialize, QueryableByName)]
 pub struct BrawlerModel {
-    #[diesel(sql_type=VarChar)]
+    #[diesel(sql_type=Integer)]
+    pub id: i32,
+    #[diesel(sql_type=Varchar)]
     pub display_name: String,
-    #[diesel(sql_type=VarChar)]
+    #[diesel(sql_type=Varchar)]
     pub avatar_url: String,
-    #[diesel(sql_type=Integer)]
-    pub mission_success_count: i32,
-    #[diesel(sql_type=Integer)]
-    pub mission_join_count: i32,
+    #[diesel(sql_type=BigInt)]
+    pub mission_success_count: i64,
+    #[diesel(sql_type=BigInt)]
+    pub mission_joined_count: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpdateDisplayNameModel {
+    pub display_name: String,
 }

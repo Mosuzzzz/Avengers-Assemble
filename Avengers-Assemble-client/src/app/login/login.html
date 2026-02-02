@@ -1,60 +1,49 @@
-<div class="login-container">
-
-    <mat-card class="example-card" appearance="outlined">
-        <mat-card-header>
-            <mat-card-title>
-                <h3>{{mode.toLocaleUpperCase()}}</h3>
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <form (ngSubmit)="onSubmit()" [formGroup]="form" autocomplete="off">
-                <!-- Username -->
-                <mat-form-field appearance="outline">
-                    <mat-label>Username</mat-label>
+<div class="flex justify-center content-center h-screen bg-white">
+    <div class="flex flex-col justify-center content-center">
+        <div class="text-3xl mt-2 self-center font-black">
+            Avengers Assemble
+        </div>
+        <div class="text-3xl mt-4 self-center font-black">
+            {{mode}} 
+        </div>
+        <div class="form">
+            <form (ngSubmit)="onSubmit()" [formGroup]="form" autocomplete="off" class="w-[375px] mt-4">
+                <div class="mt-4">
                     <input matInput type="text" (input)="updateErrorMsg('username')" formControlName="username"
-                        placeholder="type your username here">
+                        placeholder="username" class="p-[10px] h-[48px] w-full border-black border rounded-sm">
                     @if (form.controls['username'].invalid) {
-                    <mat-error>{{errorMsg.username()}}</mat-error>
+                    <span class="text-red-500">{{errorMsg.username()}}</span>
                     }
-                </mat-form-field>
-
-                <!-- Password -->
-                <mat-form-field appearance="outline">
-                    <mat-label>Password</mat-label>
-                    <input matInput type="password" (input)="updateErrorMsg('password')" formControlName="password"
-                        placeholder="type your password here">
+                </div>
+                <div class="mt-4">
+                    <input type="password" (input)="updateErrorMsg('password')" formControlName="password"
+                        placeholder="password" class="p-[10px] h-[48px] w-full border-black border rounded-sm">
                     @if (form.controls['password'].invalid) {
-                    <mat-error>{{errorMsg.password()}}</mat-error>
+                    <span class="text-red-500">{{errorMsg.password()}}</span>
                     }
-                </mat-form-field>
-
-                @if (mode !== 'login') {
-                <!-- Confirm Password -->
-                <mat-form-field appearance="outline">
-                    <mat-label>Confirm Password</mat-label>
-                    <input matInput type="password" (input)="updateErrorMsg('cf_password')"
-                        formControlName="cf_password" placeholder="type your password here">
+                </div>
+                @if (mode !== 'Login') {
+                <div class="mt-4">
+                    <input type="password" (input)="updateErrorMsg('cf_password')" formControlName="cf_password"
+                        placeholder="confirm password" class="p-[10px] h-[48px] w-full border-black border rounded-sm">
                     @if (form.controls['cf_password'].invalid) {
-                    <mat-error>{{errorMsg.cf_password()}}</mat-error>
+                    <span class="text-red-500">{{errorMsg.cf_password()}}</span>
                     }
-                </mat-form-field>
-
-                <!-- Display name -->
-                <mat-form-field appearance="outline">
-                    <mat-label>Aka</mat-label>
-                    <input matInput type="text" (input)="updateErrorMsg('displayname')" formControlName="display_name"
-                        placeholder="type your aka here">
+                </div>
+                <div class="mt-4">
+                    <input type="text" (input)="updateErrorMsg('displayname')" formControlName="display_name"
+                        placeholder="aka" class="p-[10px] h-[48px] w-full border-black border rounded-sm">
                     @if (form.controls['display_name'].invalid) {
-                    <mat-error>{{errorMsg.displayname()}}</mat-error>
+                    <span class="text-red-500">{{errorMsg.displayname()}}</span>
                     }
-                </mat-form-field>
+                </div>
                 }
-
-                <button type="submit" class="blue" matButton="outlined" [disabled]="loading() || !form.valid">
-                    @if(mode==='login'){
+                <button type="submit" class="bg-black font-bold text-white w-full rounded-md p-3 mt-4 cursor-pointer"
+                    [disabled]="loading() || !form.valid">
+                    @if(mode==='Login'){
                     Login
                     }
-                    @if(mode!=='login'){
+                    @if(mode!=='Login'){
                     Get Start
                     }
                 </button>
@@ -62,14 +51,18 @@
                 <span class="error">{{errorMsg.server()}}</span>
                 }
             </form>
-            <div class="login-spacer">or</div>
-            @if (mode === 'login') {
-            <div class="toggle">New to Brawler? <span (click)="toggleMode()">Sign Up</span></div>
-            }
-            @if (mode !== 'login') {
-            <div class="toggle">Already have an account? <span (click)="toggleMode()">Sign In</span></div>
-            }
-        </mat-card-content>
+        </div>
+        <div class="mt-4 self-center">or</div>
+        @if (mode === 'Login') {
+        <div class="mt-4 self-center toggle">New to Brawler? <span
+                class="cursor-pointer text-blue-300 hover:text-blue-600 font-bold" (click)="toggleMode()">Sign Up</span>
+        </div>
+        }
+        @if (mode !== 'Login') {
+        <div class="mt-4 self-center toggle">Already have an account? <span
+                class="cursor-pointer text-blue-300 hover:text-blue-600 font-bold" (click)="toggleMode()">Sign In</span>
+        </div>
+        }
+    </div>
 
-    </mat-card>
 </div>

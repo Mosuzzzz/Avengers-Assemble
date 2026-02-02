@@ -17,10 +17,16 @@ pub struct MissionEntity {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
     pub deleted_at: Option<NaiveDateTime>,
+    pub avatar_url: Option<String>,
 }
 
 impl MissionEntity {
-    pub fn to_model(&self, crew_count: i64, chief_display_name: String) -> MissionModel {
+    pub fn to_model(
+        &self,
+        crew_count: i64,
+        chief_display_name: String,
+        chief_avatar_url: Option<String>,
+    ) -> MissionModel {
         MissionModel {
             id: self.id,
             name: self.name.clone(),
@@ -28,6 +34,7 @@ impl MissionEntity {
             status: self.status.clone(),
             chief_id: self.chief_id,
             chief_display_name,
+            chief_avatar_url,
             crew_count,
             created_at: self.created_at,
             updated_at: self.updated_at,

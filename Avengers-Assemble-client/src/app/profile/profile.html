@@ -1,7 +1,52 @@
-<p>profile works!</p>
+<div class="flex justify-center itmes-center h-screen bg-transparent">
+    <div class="flex flex-col justify-center">
+        <div class="card h-[600px] w-[550px] border shadow-md rounded-md p-16 bg-white">
+            <div class="flex flex-col gap-10">
+                <div class="flex flex-col gap-5">
+                    <h1 class="font-medium text-4xl">
+                        Edit Profile
+                    </h1>
+                    <span class="text-sm text-gray-500">
+                        Uptate your personal Profile
+                    </span>
+                </div>
+                <div class="flex gap-10 items-center">
+                    @if (imgPreview()) {
+                    <img [src]="imgPreview()" class="w-16 h-16 rounded-full shadow-md" alt="upload image">
+                    }@else{
+                    <span
+                        class="w-16 h-16 rounded-full text-xl font-semibold flex justify-center items-center bg-gray-200 uppercase text-gray-600">
+                        {{display_name()!.charAt(0)}}
+                    </span>
+                    }
+                    <!-- {{display_name()}} -->
+                    <input type="file" #filePicker (change)="onImgPicked($event)" accept=".jpg, .png">
+                    <button class="pl-5 pr-5 h-12 rounded-md shadow-md border border-gray-300 hover:border-black"
+                        (click)="filePicker.click()">Upload Image</button>
+                </div>
 
-<img src="{{avatar_url()}}" alt="user-avatar">
+                <div>
+                    <h1 class="text-2xl">Personal Information</h1>
+                    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" autocomplete="off" class="w-[375px] mt-4">
+                        <div class="mt-4 gap-2 flex flex-col">
+                            <span class="text-sm">Name</span>
+                            <input type="text" formControlName="display_name" placeholder="{{display_name()}}"
+                                class="bg-gray-100 p-[10px] h-[48px] w-full border-black border rounded-sm">
+                        </div>
+                    </form>
+                </div>
 
-<div class="upload-photo">
-    <button (click)="openDialog()">new Avatar</button>
+                @if (errorMsg()) {
+                <div class="text-red-500 text-sm mt-2">
+                    {{errorMsg()}}
+                </div>
+                }
+
+                <div class="mt-4 ">
+                    <button class="bg-black text-white p-2 rounded-md pl-5 pr-5 hover:bg-gray-400 cursor-pointer"
+                        (click)="onSubmit()" [disabled]="!imgFile && !profileForm.dirty">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

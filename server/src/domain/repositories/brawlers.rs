@@ -23,4 +23,5 @@ pub trait BrawlerRepository {
 
     async fn get_missions(&self, brawler_id: i32) -> Result<Vec<MissionModel>>;
     async fn crew_counting(&self, mission_id: i32) -> Result<u32>;
+    async fn update_display_name(&self, brawler_id: i32, display_name: String) -> Result<()>;
 }

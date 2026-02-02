@@ -2,9 +2,10 @@ import { inject, Injectable } from '@angular/core'
 import { environment } from '../../environments/environment'
 import { HttpClient } from '@angular/common/http'
 import { MissionFilter } from '../_models/mission-filter'
-import { firstValueFrom } from 'rxjs'
+import { first, firstValueFrom } from 'rxjs'
 import { Mission } from '../_models/mission'
 import { AddMission } from '../_models/add-mission'
+import { EditMission } from '../_models/edit-mission'
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,17 @@ export class MissionService {
   private _http = inject(HttpClient)
 
   filter: MissionFilter = {}
+
+  async getOne(mission_id: number): Promise<Mission> {
+    const url = this._base_url + '/view/' + mission_id
+    const mission = await firstValueFrom(this._http.get<Mission>(url))
+    return mission
+  }
+
+  async getCrew(mission_id: number): Promise<any[]> {
+    const url = this._base_url + '/view/crew/' + mission_id
+    return await firstValueFrom(this._http.get<any[]>(url))
+  }
 
   async getByFilter(filter: MissionFilter): Promise<Mission[]> {
     const queryString = this.createQueryString(filter)
@@ -46,11 +58,48 @@ export class MissionService {
 
   async getMyMissions(): Promise<Mission[]> {
     const url = this._base_url + '/brawler/my-missions'
-    console.log('get ' + url)
     const observable = this._http.get<Mission[]>(url)
     const missions = await firstValueFrom(observable)
     return missions
   }
 
+  async delete(mission: Mission): Promise<void> {
+    const url = `${this._base_url}/mission-management/${mission.id}`
+    const observable = this._http.delete(url, { responseType: 'text' })
+    await firstValueFrom(observable)
+  }
 
+  async edit(mission_id: number, editData: EditMission): Promise<void> {
+    const url = `${this._base_url}/mission-management/${mission_id}`
+    const observable = this._http.patch(url, editData, { responseType: 'text' })
+    await firstValueFrom(observable)
+  }
+
+  async start(mission_id: number): Promise<void> {
+    const url = `${this._base_url}/mission/in-progress/${mission_id}`
+    const observable = this._http.patch(url, {}, { responseType: 'text' })
+    await firstValueFrom(observable)
+  }
+  async complete(mission_id: number): Promise<void> {
+    const url = `${this._base_url}/mission/to-completed/${mission_id}`
+    const observable = this._http.patch(url, {}, { responseType: 'text' })
+    await firstValueFrom(observable)
+  }
+  async fail(mission_id: number): Promise<void> {
+    const url = `${this._base_url}/mission/to-failed/${mission_id}`
+    const observable = this._http.patch(url, {}, { responseType: 'text' })
+    await firstValueFrom(observable)
+  }
+
+  async join(mission_id: number) {
+    const url = `${this._base_url}/crew/join/${mission_id}`
+    const observable = this._http.post(url, {}, { responseType: 'text' })
+    await firstValueFrom(observable)
+  }
+
+  async leave(mission_id: number) {
+    const url = `${this._base_url}/crew/leave/${mission_id}`
+    const observable = this._http.delete(url, { responseType: 'text' })
+    await firstValueFrom(observable)
+  }
 }

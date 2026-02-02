@@ -1,30 +1,32 @@
-<nav class="w-full flex content-center justify-center bg-transparent">
-    <div class="flex content-center justify-center ">
-        <div class="my-navbar w-[600px] h-12 flex content-center justify-around rounded-full bg-[#232323] mt-5">
-
-            <span class="home-btn self-center font-bold" routerLink="/" routerLinkActive="active"
-                [routerLinkActiveOptions]="{exact:true}">
-                Home
-            </span>
-            @if(avatar_url()){
-            <button class="menu-button" routerLink="/missions" routerLinkActive="active">Missions</button>
-            <button class="menu-button" routerLink="/chief" routerLinkActive="active">My Missions</button>
-            }
-
-
-
-            @if (avatar_url()) {
-            <div class="flex row-auto justify-center content-center">
-                <button matButton [matMenuTriggerFor]="menu" class="flex content-center self-center">
-                    <img src="{{avatar_url()}}" alt="user avatar" class="avatar flex self-center border-red-50 border">
-                </button>
-             
+<nav class="nav w-full flex content-center justify-center bg-transparent ">
+    <div class="flex flex-col items-center justify-center">
+        <div
+            class="my-navbar w-[400px] h-full flex flex-col content-center justify-around rounded-full bg-[#232323] mt-6 shadow-2xl">
+            <div class="flex items-center justify-around mt-2">
+                <span (click)="toggleDropdownoff()" class="home-btn self-center flex items-center gap-1 cursor-pointer"
+                    routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+                    <fa-icon [icon]="fadot" class="text-[10px] text-[#F1FD82]" />
+                    Home
+                </span>
+                <button (click)="toggleDropdownoff()" class="menu-button" routerLink="/missions"
+                    routerLinkActive="active">Missions</button>
+                <button (click)="toggleDropdownoff()" class="menu-button" routerLink="/chief" routerLinkActive="active">
+                    My Missions</button>
+                <div class="flex row-auto justify-center content-center ">
+                    <span (click)="toggleDropdown()" [class.active]="isDropdownActive "
+                        class="flex content-center self-center dropdown">
+                        <fa-icon class="text-2xl text-[#b3b3b3] hover:text-white cursor-pointer" [icon]="fabar" />
+                    </span>
+                </div>
             </div>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item class="menu-button" routerLink="/profile">Profile</button>
-                <button mat-menu-item class="menu-button" (click)="logout()">Log-out</button>
-            </mat-menu>
-            }
+            <div class="flex content-center justify-around">
+                <button (click)="toggleDropdown()" class="menu-button-burger" routerLink="/profile"
+                    routerLinkActive="active">Profile</button>
+            </div>
+            <div class="flex content-center justify-around">
+                <button (click)="toggleDropdown()" class="menu-button-burger" (click)="logout()">Log-out</button>
+            </div>
         </div>
     </div>
+
 </nav>

@@ -21,9 +21,19 @@ export class UserService {
       'base64_string': base64string.split(',')[1]
     }
     try {
-      // console.log(uploadImg.base64_string)
       const cloudinaryImg = await firstValueFrom(this._http.post<CloudinaryImage>(url, uploadImg))
       this._passport.saveAvatarImgUrl(cloudinaryImg.url)
+    } catch (error: any) {
+      return error.error as string
+    }
+    return null
+  }
+
+  async updateDisplayName(displayName: string): Promise<string | null> {
+    const url = this._base_url + '/display-name'
+    try {
+      await firstValueFrom(this._http.post(url, { display_name: displayName }))
+      this._passport.updateDisplayName(displayName)
     } catch (error: any) {
       return error.error as string
     }

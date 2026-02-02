@@ -20,6 +20,8 @@ pub struct MissionModel {
     pub chief_id: i32,
     #[diesel(sql_type = Varchar)]
     pub chief_display_name: String,
+    #[diesel(sql_type = Nullable<Varchar>)]
+    pub chief_avatar_url: Option<String>,
     #[diesel(sql_type = BigInt)]
     pub crew_count: i64,
     #[diesel(sql_type = Timestamp)]

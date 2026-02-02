@@ -111,6 +111,7 @@ SELECT
     missions.status,
     missions.chief_id,
     brawlers.display_name AS chief_display_name,
+    brawlers.avatar_url AS chief_avatar_url,
     (SELECT COUNT(*) FROM crew_memberships WHERE crew_memberships.mission_id = missions.id) AS crew_count,
     missions.created_at,
     missions.updated_at
@@ -139,5 +140,16 @@ ORDER BY missions.created_at DESC
         let count = u32::try_from(result)?;
 
         Ok(count)
+    }
+
+    async fn update_display_name(&self, brawler_id: i32, display_name: String) -> Result<()> {
+        let mut conn = Arc::clone(&self.db_pool).get()?;
+
+        diesel::update(brawlers::table)
+            .filter(brawlers::id.eq(brawler_id))
+            .set(brawlers::display_name.eq(display_name))
+            .execute(&mut conn)?;
+
+        Ok(())
     }
 }

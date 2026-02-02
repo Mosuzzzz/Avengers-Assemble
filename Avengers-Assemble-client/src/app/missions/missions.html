@@ -1,47 +1,87 @@
-<div class="filter-form">
-    <h3>Search</h3>
-    <!-- FormsModule  -->
-    <input type="text" [(ngModel)]="filter.name" placeholder="Mission Name" />
-    <select [(ngModel)]="filter.status">
-        <option value="">-- Select Status --</option>
-        <option value="Open">Open</option>
-        <option value="InProgress">In Progress</option>
-        <option value="Completed">Completed</option>
-        <option value="Failed">Failed</option>
-    </select>
-    <button (click)="onSubmit()">Go</button>
-</div>
-<div class="mission-list">
-    @if((missions$ | async)?.length) {
-    <div class="header">
-        <span class="name">Name</span>
-        <span class="description">Description</span>
-        <span class="name">Chief</span>
-        <span class="crew_count">Number of Crew</span>
-        <span class="status">Status</span>
-        <span class="created_at">Created at</span>
-        <span class="updated_at">Updated at</span>
-        @if(isSignin()){
-        <span class="action">Actions</span>
+<div class="container mt-32 h-screen p-32 font-sans">
+    <div class="tap-row flex justify-between items-start border-b-2 rounded-md p-6 shadow-[0_6px_10px_-8px_rgba(0,0,0,0.12)] bg-gray-50">
+                <div class="flex flex-col">
+            <span class="text-4xl flex flex-col tracking-tigh font-semibold">Mission</span>
+            <span class="text-gray-500">discover your mission</span>
+        </div>
+        <div class="flex flex-col items-end gap-8">
+            <!-- Search Section (Top Right) -->
+            <div class="flex items-center gap-6">
+                @if (filter.name) {
+                <div
+                    class="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full animate-in fade-in slide-in-from-right-4">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Search:</span>
+                    <span class="text-sm font-bold text-black max-w-[150px] truncate">{{filter.name}}</span>
+                    <button (click)="filter.name = ''; loadMissions()"
+                        class="text-slate-400 hover:text-red-500 transition-colors ml-1 leading-none">
+                        <mat-icon class="scale-75 translate-y-0.5">close</mat-icon>
+                    </button>
+                </div>
+                }
+
+                <div (click)="openSearchDialog()"
+                    class="cursor-pointer p-3 rounded-2xl hover:bg-slate-50 transition-all active:scale-95 group relative">
+                    <fa-icon [icon]="famagnifyingglass"
+                        class="text-slate-400 group-hover:text-black transition-colors" />
+                    @if (filter.name) {
+                    <span class="absolute top-2 right-2 w-3 h-3 bg-blue-500 border-2 border-white rounded-full"></span>
+                    }
+                </div>
+            </div>
+
+            <!-- Status Filter Section -->
+            <div class="space-x-5 font-bold flex relative top-5">
+                <span (click)="setStatus(undefined)" class="cursor-pointer hover:text-gray-500 transition-all"
+                    [class.underline]="filter.status === undefined" [class.decoration-4]="filter.status === undefined"
+                    [class.underline-offset-8]="filter.status === undefined">all</span>
+                <span (click)="setStatus('Open')" class="cursor-pointer hover:text-gray-500 transition-all"
+                    [class.underline]="filter.status === 'Open'" [class.decoration-4]="filter.status === 'Open'"
+                    [class.underline-offset-8]="filter.status === 'Open'">open</span>
+                <span (click)="setStatus('Completed')" class="cursor-pointer hover:text-gray-500 transition-all"
+                    [class.underline]="filter.status === 'Completed'"
+                    [class.decoration-4]="filter.status === 'Completed'"
+                    [class.underline-offset-8]="filter.status === 'Completed'">completed</span>
+                <span (click)="setStatus('InProgress')" class="cursor-pointer hover:text-gray-500 transition-all"
+                    [class.underline]="filter.status === 'InProgress'"
+                    [class.decoration-4]="filter.status === 'InProgress'"
+                    [class.underline-offset-8]="filter.status === 'InProgress'">in progress</span>
+                <span (click)="setStatus('Failed')" class="cursor-pointer hover:text-gray-500 transition-all"
+                    [class.underline]="filter.status === 'Failed'" [class.decoration-4]="filter.status === 'Failed'"
+                    [class.underline-offset-8]="filter.status === 'Failed'">failed</span>
+            </div>
+        </div>
+    </div>
+    <div class="card p-10 gap-3 flex justify-start flex-wrap mt-3 pl-28">
+        @for (mission of missions$ | async; track mission.id) {
+        <div class="card-item flex flex-col border-gray-400 p-10 h-80 w-72 rounded-s-md shadow-md gap-2 bg-white">
+            <h1 class="text-2xl font-medium min-h-[38px] overflow-hidden">{{mission.name}}</h1>
+            <span class="text-sm text-gray-600 min-h-[18px] overflow-hidden" [title]="mission.description || ''">
+                {{mission.description}}
+            </span>
+            <div class="mt-11 gap-4 flex flex-col">
+                <div
+                    class="flex text-gray-400 text-sm font-semibold justify-between border-b-2 p-2 shadow-[0_6px_10px_-8px_rgba(0,0,0,0.12)]">
+                    <span>Status</span>
+                    <span>Create by</span>
+                </div>
+                <div class="flex justify-between p-2 items-center px-2">
+                    <span [class]="getStatusClass(mission.status)">{{mission.status}}</span>
+                    @if(mission.chief_avatar_url){
+                    <img [matTooltip]="mission.chief_display_name" class="w-8 rounded-full"
+                        src="{{mission.chief_avatar_url}}" alt="avatar_chife">
+                    } @else {
+                    <span [matTooltip]="mission.chief_display_name"
+                        class="w-8 h-8 rounded-full text-sm font-semibold flex justify-center items-center bg-gray-200 uppercase text-gray-600">{{mission.chief_display_name.charAt(0)}}</span>
+                    }
+                </div>
+            </div>
+            <div class="mt-1">
+                <span class="bg-black text-white p-2 rounded-md cursor-pointer hover:bg-gray-800 font-semibold"
+                    (click)="viewDetails(mission)">View Details
+                </span>
+            </div>
+        </div>
         }
     </div>
-    @for (mission of missions$ | async; track mission.id) {
-    <div class="contents">
-        <span class="name">{{mission.name}}</span>
-        <span class="description">{{mission.description}}</span>
-        <span class="name">{{mission.chief_display_name}}</span>
-        <span class="crew_count">{{mission.crew_count}}</span>
-        <span class="status">{{mission.status}}</span>
-        <span class="created_at">{{mission.created_at | date:'short'}}</span>
-        <span class="updated_at">{{mission.updated_at | date:'short'}}</span>
 
-        <!-- fix: จะ join ไม่ได้ ถ้า chief_id ตรงกับ user_id ที่ login -->
-        <!-- แนวทาง เช่น หา user id จาก token หรือ ปรับให้ passport มี user_id โดยส่งมาจาก backend  -->
-        @if(isSignin()){
-        <span class="action">Join</span>
-        }
-
-    </div>
-    }
-    }
 </div>
