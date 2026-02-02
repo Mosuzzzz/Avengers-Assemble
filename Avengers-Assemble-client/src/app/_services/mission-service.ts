@@ -7,6 +7,8 @@ import { Mission } from '../_models/mission'
 import { AddMission } from '../_models/add-mission'
 import { EditMission } from '../_models/edit-mission'
 
+import { MissionIntel, AddIntel } from '../_models/intel'
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,6 +16,17 @@ export class MissionService {
   ///view
   private _base_url = environment.baseUrl + '/api'
   private _http = inject(HttpClient)
+
+  async getIntel(mission_id: number): Promise<MissionIntel[]> {
+    const url = `${this._base_url}/intel/${mission_id}`
+    return await firstValueFrom(this._http.get<MissionIntel[]>(url))
+  }
+
+  async addIntel(mission_id: number, intel: AddIntel): Promise<number> {
+    const url = `${this._base_url}/intel/${mission_id}`
+    const resp = await firstValueFrom(this._http.post<{ id: number }>(url, intel))
+    return resp.id || Number(resp) // Backend might return raw ID or JSON
+  }
 
   filter: MissionFilter = {}
 

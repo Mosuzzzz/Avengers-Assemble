@@ -1,10 +1,11 @@
-import { Component, computed, inject, signal, Signal } from '@angular/core'
+import { Component, computed, inject, signal, Signal, OnInit } from '@angular/core'
 import { PassportService } from '../_services/passport-service'
 import { UserService } from '../_services/user-service'
+import { BrawlerService } from '../_services/brawler-service'
+import { Brawler } from '../_models/brawler'
 import { fileTypeFromBlob } from 'file-type'
 import { MatButtonModule } from '@angular/material/button'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
-
 
 @Component({
   selector: 'app-profile',
@@ -12,27 +13,47 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
-export class Profile {
+export class Profile implements OnInit {
   avatar_url: Signal<string>
   display_name: Signal<string | undefined>
   private _passport = inject(PassportService)
   private _user = inject(UserService)
+  private _brawler = inject(BrawlerService)
+
+  brawlerProfile = signal<Brawler | undefined>(undefined)
+  rank = computed(() => {
+    const xp = this.brawlerProfile()?.xp || 0
+    return Math.floor(xp / 100) + 1
+  })
+
   acceptedMimeType = ['image/jpeg', 'image/png']
   imgFile: File | undefined
   imgPreview = signal<string | undefined>(undefined)
   errorMsg = signal<string | undefined>(undefined)
 
   form: FormGroup
- 
+
   profileForm = new FormGroup({
     display_name: new FormControl(''),
   })
-
 
   constructor() {
     this.display_name = computed(() => this._passport.data()?.display_name)
     this.avatar_url = computed(() => this._passport.avatar())
     this.form = new FormGroup({})
+  }
+
+  async ngOnInit() {
+    await this.fetchProfile()
+  }
+
+  async fetchProfile() {
+    try {
+      const profile = await this._brawler.getProfile()
+      this.brawlerProfile.set(profile)
+    } catch (error) {
+      console.error("Failed to fetch profile", error)
+    }
   }
 
   async onSubmit() {

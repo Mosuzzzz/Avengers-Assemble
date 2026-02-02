@@ -1,3 +1,21 @@
+@if (alerts.length > 0) {
+<div
+    class="alert-banner flex flex-col gap-2 p-4 bg-red-900 text-white animate-pulse overflow-hidden sticky top-0 z-[100]">
+    @for (alert of alerts; track alert.id) {
+    <div class="flex items-center justify-between border-b border-red-700 pb-2 last:border-0">
+        <div class="flex items-center gap-4">
+            <span class="font-black p-1 px-3 rounded bg-white text-red-900 uppercase text-[10px] tracking-widest">
+                {{alert.level}}
+            </span>
+            <span class="font-bold uppercase tracking-tight">{{alert.title}}:</span>
+            <span class="text-sm opacity-90">{{alert.content}}</span>
+        </div>
+        <span class="text-[10px] opacity-50 font-mono">{{alert.created_at | date:'HH:mm:ss'}}</span>
+    </div>
+    }
+</div>
+}
+
 <div class="container h-full flex flex-col content-cente bg-[#111111] justify-center text-xl rounded-b-xl">
     <div class="flex content-center justify-center self-center gap-5">
         <span class="font-bold text-6xl text-white">HI</span>

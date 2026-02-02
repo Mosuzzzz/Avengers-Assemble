@@ -95,5 +95,52 @@
             }
             }
         </div>
+        <!-- Mission Intel Hub -->
+        <div class="mt-8 border-t border-gray-100 pt-6">
+            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Mission Intel Hub</h3>
+
+            <!-- Intel Feed -->
+            <div class="space-y-4 max-h-60 overflow-y-auto mb-4 pr-2">
+                @for (intel of intelList(); track intel.id) {
+                <div class="flex gap-3">
+                    <div
+                        class="w-8 h-8 rounded-full overflow-hidden bg-blue-50 flex-shrink-0 flex items-center justify-center">
+                        @if (intel.brawler_avatar_url) {
+                        <img [src]="intel.brawler_avatar_url" [alt]="intel.brawler_display_name"
+                            class="w-full h-full object-cover">
+                        } @else {
+                        <span class="text-xs font-bold text-blue-600">{{intel.brawler_display_name.charAt(0)}}</span>
+                        }
+                    </div>
+                    <div class="flex-1 bg-gray-50 rounded-lg p-3">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-gray-900">{{intel.brawler_display_name}}</span>
+                            <span class="text-[10px] text-gray-400">{{intel.created_at | date:'shortTime'}}</span>
+                        </div>
+                        <p class="text-sm text-gray-700">{{intel.content}}</p>
+                    </div>
+                </div>
+                }
+                @if (intelList().length === 0) {
+                <div class="text-center py-6">
+                    <p class="text-sm text-gray-400 italic">No operational intel reported yet.</p>
+                </div>
+                }
+            </div>
+
+            <!-- Add Intel -->
+            <div class="flex gap-2">
+                <input type="text" [(ngModel)]="newIntel" (keyup.enter)="sendIntel()"
+                    placeholder="Report mission intel..."
+                    class="flex-1 bg-gray-100 border-none rounded-md px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                <button (click)="sendIntel()"
+                    class="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
