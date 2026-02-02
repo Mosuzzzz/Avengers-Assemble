@@ -152,4 +152,40 @@ ORDER BY missions.created_at DESC
 
         Ok(())
     }
+
+    async fn grant_xp(&self, brawler_ids: Vec<i32>, amount: i32) -> Result<()> {
+        let mut conn = Arc::clone(&self.db_pool).get()?;
+
+        diesel::update(brawlers::table)
+            .filter(brawlers::id.eq_any(brawler_ids))
+            .set(brawlers::xp.eq(brawlers::xp + amount))
+            .execute(&mut conn)?;
+
+        Ok(())
+    }
+
+    async fn get_profile(
+        &self,
+        brawler_id: i32,
+    ) -> Result<crate::domain::value_objects::brawler_model::BrawlerModel> {
+        let mut conn = Arc::clone(&self.db_pool).get()?;
+
+        let sql = r#"
+SELECT 
+    brawlers.id, 
+    brawlers.display_name, 
+    brawlers.avatar_url,
+    brawlers.xp,
+    (SELECT COUNT(*) FROM missions WHERE missions.chief_id = brawlers.id AND missions.status = 'Completed') AS mission_success_count,
+    (SELECT COUNT(*) FROM crew_memberships WHERE crew_memberships.brawler_id = brawlers.id) AS mission_joined_count
+FROM brawlers
+WHERE brawlers.id = $1
+        "#;
+
+        let result = diesel::sql_query(sql)
+            .bind::<diesel::sql_types::Int4, _>(brawler_id)
+            .get_result::<crate::domain::value_objects::brawler_model::BrawlerModel>(&mut conn)?;
+
+        Ok(result)
+    }
 }

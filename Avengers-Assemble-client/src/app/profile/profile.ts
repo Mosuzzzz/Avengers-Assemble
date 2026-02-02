@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Component, computed, inject, signal, Signal, OnInit } from '@angular/core'
 import { PassportService } from '../_services/passport-service'
 import { UserService } from '../_services/user-service'
@@ -6,6 +7,15 @@ import { Brawler } from '../_models/brawler'
 import { fileTypeFromBlob } from 'file-type'
 import { MatButtonModule } from '@angular/material/button'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+=======
+import { Component, computed, inject, signal, Signal } from '@angular/core'
+import { PassportService } from '../_services/passport-service'
+import { UserService } from '../_services/user-service'
+import { fileTypeFromBlob } from 'file-type'
+import { MatButtonModule } from '@angular/material/button'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+
+>>>>>>> d755a8d (0.0.1)
 
 @Component({
   selector: 'app-profile',
@@ -18,6 +28,7 @@ export class Profile implements OnInit {
   display_name: Signal<string | undefined>
   private _passport = inject(PassportService)
   private _user = inject(UserService)
+<<<<<<< HEAD
   private _brawler = inject(BrawlerService)
 
   brawlerProfile = signal<Brawler | undefined>(undefined)
@@ -26,16 +37,26 @@ export class Profile implements OnInit {
     return Math.floor(xp / 100) + 1
   })
 
+=======
+>>>>>>> d755a8d (0.0.1)
   acceptedMimeType = ['image/jpeg', 'image/png']
   imgFile: File | undefined
   imgPreview = signal<string | undefined>(undefined)
   errorMsg = signal<string | undefined>(undefined)
 
   form: FormGroup
+<<<<<<< HEAD
 
   profileForm = new FormGroup({
     display_name: new FormControl(''),
   })
+=======
+ 
+  profileForm = new FormGroup({
+    display_name: new FormControl(''),
+  })
+
+>>>>>>> d755a8d (0.0.1)
 
   constructor() {
     this.display_name = computed(() => this._passport.data()?.display_name)
@@ -43,6 +64,7 @@ export class Profile implements OnInit {
     this.form = new FormGroup({})
   }
 
+<<<<<<< HEAD
   async ngOnInit() {
     await this.fetchProfile()
   }
@@ -79,6 +101,31 @@ export class Profile implements OnInit {
     }
   }
 
+=======
+  async onSubmit() {
+    if (this.imgFile) {
+      const error = await this._user.uploadAvatarImg(this.imgFile)
+      if (error) {
+        this.errorMsg.set(error)
+        return
+      } else {
+        this.imgFile = undefined
+        this.imgPreview.set(undefined)
+      }
+    }
+
+    const { display_name } = this.profileForm.value
+    if (display_name && display_name !== this.display_name()) {
+      const error = await this._user.updateDisplayName(display_name)
+      if (error) {
+        this.errorMsg.set(error)
+      } else {
+        this.profileForm.get('display_name')?.reset()
+      }
+    }
+  }
+
+>>>>>>> d755a8d (0.0.1)
   async onImgPicked(event: Event) {
     this.imgFile = undefined
     this.imgPreview.set(undefined)

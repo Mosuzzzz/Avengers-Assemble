@@ -31,6 +31,7 @@ pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
         .route("/avatar", post(upload_avatar))
         .route("/display-name", post(update_display_name))
         .route("/my-missions", get(get_missions))
+        .route("/profile", get(get_profile))
         .route_layer(axum::middleware::from_fn(auth));
 
     Router::new()
@@ -97,6 +98,20 @@ where
         .await
     {
         Ok(_) => StatusCode::OK.into_response(),
+
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+    }
+}
+
+pub async fn get_profile<T>(
+    State(user_case): State<Arc<BrawlersUseCase<T>>>,
+    Extension(user_id): Extension<i32>,
+) -> impl IntoResponse
+where
+    T: BrawlerRepository + Send + Sync,
+{
+    match user_case.get_profile(user_id).await {
+        Ok(profile) => (StatusCode::OK, Json(profile)).into_response(),
 
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }

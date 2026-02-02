@@ -4,28 +4,37 @@ use anyhow::Result;
 
 use crate::domain::{
     repositories::{
-        mission_operation::MissionOperationRepository, mission_viewing::MissionViewingRepository,
+        brawlers::BrawlerRepository, mission_operation::MissionOperationRepository,
+        mission_viewing::MissionViewingRepository,
     },
     value_objects::mission_statuses::MissionStatuses,
 };
-pub struct MissionOperationUseCase<T1, T2>
+pub struct MissionOperationUseCase<T1, T2, T3>
 where
     T1: MissionOperationRepository + Send + Sync,
     T2: MissionViewingRepository + Send + Sync,
+    T3: BrawlerRepository + Send + Sync,
 {
     mission_operation_repository: Arc<T1>,
     mission_viewing_repository: Arc<T2>,
+    brawler_repository: Arc<T3>,
 }
 
-impl<T1, T2> MissionOperationUseCase<T1, T2>
+impl<T1, T2, T3> MissionOperationUseCase<T1, T2, T3>
 where
     T1: MissionOperationRepository + Send + Sync,
     T2: MissionViewingRepository + Send + Sync,
+    T3: BrawlerRepository + Send + Sync,
 {
-    pub fn new(mission_operation_repository: Arc<T1>, mission_viewing_repository: Arc<T2>) -> Self {
+    pub fn new(
+        mission_operation_repository: Arc<T1>,
+        mission_viewing_repository: Arc<T2>,
+        brawler_repository: Arc<T3>,
+    ) -> Self {
         Self {
             mission_operation_repository,
             mission_viewing_repository,
+            brawler_repository,
         }
     }
 
@@ -70,6 +79,15 @@ where
             .mission_operation_repository
             .to_completed(mission_id, chief_id)
             .await?;
+
+        // Grant XP to Chief and Crew
+        let mut brawler_ids = vec![chief_id];
+        let crew = self.mission_viewing_repository.get_crew(mission_id).await?;
+        for member in crew {
+            brawler_ids.push(member.id);
+        }
+
+        self.brawler_repository.grant_xp(brawler_ids, 100).await?;
 
         Ok(result)
     }

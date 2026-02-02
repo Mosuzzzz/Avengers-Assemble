@@ -1,0 +1,18 @@
+ALTER TABLE brawlers ADD COLUMN xp INT NOT NULL DEFAULT 0;
+
+CREATE TABLE mission_intel (
+    id SERIAL PRIMARY KEY,
+    mission_id INT NOT NULL REFERENCES missions(id) ON DELETE CASCADE,
+    brawler_id INT NOT NULL REFERENCES brawlers(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE global_alerts (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    level VARCHAR(50) NOT NULL, -- 'Emergency', 'God Level', 'Info'
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

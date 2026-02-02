@@ -67,12 +67,18 @@ where
         Ok(missions)
     }
 
-    pub async fn update_display_name(
+    pub async fn update_display_name(&self, brawler_id: i32, display_name: String) -> Result<()> {
+        self.brawler_repository
+            .update_display_name(brawler_id, display_name)
+            .await?;
+        Ok(())
+    }
+
+    pub async fn get_profile(
         &self,
         brawler_id: i32,
-        display_name: String,
-    ) -> Result<()> {
-        self.brawler_repository.update_display_name(brawler_id, display_name).await?;
-        Ok(())
+    ) -> Result<crate::domain::value_objects::brawler_model::BrawlerModel> {
+        let profile = self.brawler_repository.get_profile(brawler_id).await?;
+        Ok(profile)
     }
 }
