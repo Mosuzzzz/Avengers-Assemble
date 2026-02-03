@@ -1,10 +1,6 @@
 <div class="flex justify-center itmes-center h-screen bg-transparent">
     <div class="flex flex-col justify-center">
-<<<<<<< HEAD
         <div class="card  w-[550px] border shadow-md rounded-md p-16 bg-white">
-=======
-        <div class="card h-[600px] w-[550px] border shadow-md rounded-md p-16 bg-white">
->>>>>>> d755a8d (0.0.1)
             <div class="flex flex-col gap-10">
                 <div class="flex flex-col gap-5">
                     <h1 class="font-medium text-4xl">
@@ -29,7 +25,6 @@
                         (click)="filePicker.click()">Upload Image</button>
                 </div>
 
-<<<<<<< HEAD
                 <!-- Hero Status & Progress -->
                 @if (brawlerProfile()) {
                 <div class="grid grid-cols-2 gap-4 border-y border-gray-100 py-6">
@@ -79,35 +74,14 @@
 
                 @if (errorMsg()) {
                 <div class="text-red-500 text-xs font-medium">
-=======
-                <div>
-                    <h1 class="text-2xl">Personal Information</h1>
-                    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" autocomplete="off" class="w-[375px] mt-4">
-                        <div class="mt-4 gap-2 flex flex-col">
-                            <span class="text-sm">Name</span>
-                            <input type="text" formControlName="display_name" placeholder="{{display_name()}}"
-                                class="bg-gray-100 p-[10px] h-[48px] w-full border-black border rounded-sm">
-                        </div>
-                    </form>
-                </div>
-
-                @if (errorMsg()) {
-                <div class="text-red-500 text-sm mt-2">
->>>>>>> d755a8d (0.0.1)
                     {{errorMsg()}}
                 </div>
                 }
 
-<<<<<<< HEAD
                 <div class="mt-4 flex gap-4">
                     <button
                         class="flex-1 bg-black text-white h-12 rounded-md font-bold hover:bg-gray-800 transition-colors disabled:opacity-50"
                         (click)="onSubmit()" [disabled]="!imgFile && !profileForm.dirty">Save changes</button>
-=======
-                <div class="mt-4 ">
-                    <button class="bg-black text-white p-2 rounded-md pl-5 pr-5 hover:bg-gray-400 cursor-pointer"
-                        (click)="onSubmit()" [disabled]="!imgFile && !profileForm.dirty">Update</button>
->>>>>>> d755a8d (0.0.1)
                 </div>
             </div>
         </div>

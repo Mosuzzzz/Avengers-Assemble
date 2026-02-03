@@ -6,11 +6,8 @@ import { first, firstValueFrom } from 'rxjs'
 import { Mission } from '../_models/mission'
 import { AddMission } from '../_models/add-mission'
 import { EditMission } from '../_models/edit-mission'
-<<<<<<< HEAD
 
 import { MissionIntel, AddIntel } from '../_models/intel'
-=======
->>>>>>> d755a8d (0.0.1)
 
 @Injectable({
   providedIn: 'root',
