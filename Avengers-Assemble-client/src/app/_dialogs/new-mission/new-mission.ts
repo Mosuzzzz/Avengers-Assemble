@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core'
 import { AddMission } from '../../_models/add-mission'
-import { MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog'
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog'
 import { MatButtonModule } from '@angular/material/button'
 import { FormsModule } from '@angular/forms'
+import { MatIconModule } from '@angular/material/icon'
 
 @Component({
   selector: 'app-new-mission',
-  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButtonModule, FormsModule],
+  imports: [MatDialogModule, MatButtonModule, FormsModule, MatIconModule],
   templateUrl: './new-mission.html',
   styleUrl: './new-mission.scss',
 })
@@ -25,7 +26,9 @@ export class NewMission {
   private clean(addMission: AddMission): AddMission {
     return {
       name: addMission.name.trim() || 'untitled',
-      description: addMission.description?.trim() || undefined
+      description: addMission.description?.trim() || undefined,
+      password: addMission.password?.trim() || undefined,
+      max_crew: addMission.max_crew
     }
   }
 }

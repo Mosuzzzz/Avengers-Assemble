@@ -1,16 +1,16 @@
-.mission-dialog-container {
-    max-width: 500px;
+.alert-dialog-container {
+    width: 480px;
 }
 
 :host {
     display: block;
-    animation: dialogEntrance 0.3s ease-out;
+    animation: dialogEntrance 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes dialogEntrance {
     from {
         opacity: 0;
-        transform: translateY(20px) scale(0.98);
+        transform: translateY(30px) scale(0.95);
     }
 
     to {
@@ -19,7 +19,6 @@
     }
 }
 
-// Custom scrollbar for textarea
 textarea::-webkit-scrollbar {
     width: 6px;
 }
@@ -29,10 +28,10 @@ textarea::-webkit-scrollbar-track {
 }
 
 textarea::-webkit-scrollbar-thumb {
-    background: #e2e8f0;
+    background: #fecaca;
     border-radius: 10px;
 }
 
 textarea::-webkit-scrollbar-thumb:hover {
-    background: #cbd5e1;
+    background: #ef4444;
 }

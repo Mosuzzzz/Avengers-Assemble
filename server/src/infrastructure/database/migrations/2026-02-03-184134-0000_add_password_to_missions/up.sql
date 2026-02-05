@@ -1,0 +1,1 @@
+ALTER TABLE missions ADD COLUMN password VARCHAR(255);

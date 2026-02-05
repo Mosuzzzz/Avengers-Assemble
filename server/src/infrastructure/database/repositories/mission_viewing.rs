@@ -50,7 +50,10 @@ SELECT m.id,
         b.avatar_url AS chief_avatar_url,
         (SELECT COUNT(*) FROM crew_memberships cm WHERE cm.mission_id = m.id) AS crew_count,
         m.created_at,
-        m.updated_at
+        m.updated_at,
+        CASE WHEN m.password IS NOT NULL THEN true ELSE false END AS has_password,
+        m.password,
+        m.max_crew
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
 WHERE m.deleted_at IS NULL
@@ -80,7 +83,10 @@ SELECT m.id,
         b.avatar_url AS chief_avatar_url,
         (SELECT COUNT(*) FROM crew_memberships cm WHERE cm.mission_id = m.id) AS crew_count,
         m.created_at,
-        m.updated_at
+        m.updated_at,
+        CASE WHEN m.password IS NOT NULL THEN true ELSE false END AS has_password,
+        m.password,
+        m.max_crew
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
 WHERE m.deleted_at IS NULL
@@ -105,7 +111,8 @@ ORDER BY m.created_at DESC
         let sql = r#"
             SELECT b.id,
                     b.display_name,
-                    COALESCE(b.avatar_url, '') AS avatar_url,
+                    b.avatar_url,
+                    b.xp,
                     COALESCE(s.success_count, 0) AS mission_success_count,
                     COALESCE(j.joined_count, 0) AS mission_joined_count
             FROM crew_memberships cm
@@ -131,5 +138,32 @@ ORDER BY m.created_at DESC
             .load::<BrawlerModel>(&mut conn)?;
 
         Ok(brawler_list)
+    }
+
+    async fn is_participant(&self, mission_id: i32, brawler_id: i32) -> Result<bool> {
+        let mut conn = Arc::clone(&self.db_pool).get()?;
+        use crate::infrastructure::database::schema::missions;
+
+        // Check if chief
+        let is_chief = missions::table
+            .filter(missions::id.eq(mission_id))
+            .filter(missions::chief_id.eq(brawler_id))
+            .count()
+            .get_result::<i64>(&mut conn)?
+            > 0;
+
+        if is_chief {
+            return Ok(true);
+        }
+
+        // Check if crew member
+        let is_crew = crew_memberships::table
+            .filter(crew_memberships::mission_id.eq(mission_id))
+            .filter(crew_memberships::brawler_id.eq(brawler_id))
+            .count()
+            .get_result::<i64>(&mut conn)?
+            > 0;
+
+        Ok(is_crew)
     }
 }

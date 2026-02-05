@@ -1,0 +1,38 @@
+.mission-dialog-container {
+    max-width: 500px;
+}
+
+:host {
+    display: block;
+    animation: dialogEntrance 0.3s ease-out;
+}
+
+@keyframes dialogEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+// Custom scrollbar for textarea
+textarea::-webkit-scrollbar {
+    width: 6px;
+}
+
+textarea::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+}

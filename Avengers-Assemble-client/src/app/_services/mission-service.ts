@@ -104,9 +104,9 @@ export class MissionService {
     await firstValueFrom(observable)
   }
 
-  async join(mission_id: number) {
+  async join(mission_id: number, password?: string) {
     const url = `${this._base_url}/crew/join/${mission_id}`
-    const observable = this._http.post(url, {}, { responseType: 'text' })
+    const observable = this._http.post(url, { password }, { responseType: 'text' })
     await firstValueFrom(observable)
   }
 

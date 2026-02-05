@@ -1,0 +1,83 @@
+<div class="alert-dialog-container font-sans bg-white overflow-hidden">
+    <!-- Dialog Header - Emergency Red -->
+    <div class="px-8 py-6 bg-red-700 border-b border-white/10 flex items-center justify-between">
+        <div class="flex flex-col">
+            <h2 class="text-white text-2xl font-black uppercase italic tracking-tight leading-none">Global Alert</h2>
+            <span class="text-white/70 text-[10px] font-bold uppercase tracking-[0.2em] mt-1">Emergency Broadcast
+                System</span>
+        </div>
+        <div
+            class="w-12 h-12 bg-white/20 border border-white/20 rounded-xl flex items-center justify-center animate-pulse">
+            <mat-icon class="text-white scale-125">error</mat-icon>
+        </div>
+    </div>
+
+    <!-- Dialog Content -->
+    <mat-dialog-content class="!p-0 !m-0">
+        <div class="flex flex-col gap-6 p-8">
+            <p class="text-gray-500 text-sm font-medium leading-relaxed">
+                Warning: This broadcast will be transmitted to all active Avengers. Use only for level 7 security
+                threats or operational emergencies.
+            </p>
+
+            <!-- Title Input -->
+            <div class="group flex flex-col gap-1.5">
+                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest pl-1 leading-none">Alert
+                    Title</label>
+                <div
+                    class="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 group-focus-within:border-red-500 group-focus-within:bg-white transition-all">
+                    <mat-icon class="text-gray-400 mr-3 scale-90">campaign</mat-icon>
+                    <input type="text" [(ngModel)]="alert.title" placeholder="e.g. ULTRON BREACH"
+                        class="bg-transparent border-none outline-none w-full text-sm font-bold text-gray-900 placeholder:text-gray-400 placeholder:font-medium uppercase" />
+                </div>
+            </div>
+
+            <!-- Content Input -->
+            <div class="group flex flex-col gap-1.5">
+                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest pl-1 leading-none">Detailed
+                    Intel</label>
+                <div
+                    class="flex flex-col bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 group-focus-within:border-red-500 group-focus-within:bg-white transition-all">
+                    <textarea [(ngModel)]="alert.content" placeholder="Describe the threat or emergency status..."
+                        class="bg-transparent border-none outline-none w-full text-sm font-medium text-gray-700 min-h-[100px] max-h-[100px] placeholder:text-gray-400"></textarea>
+                </div>
+            </div>
+
+            <!-- Level Selection -->
+            <div class="group flex flex-col gap-1.5">
+                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest pl-1 leading-none">Severity
+                    Level</label>
+                <div class="grid grid-cols-3 gap-3">
+                    <div (click)="alert.level = 'God Level'"
+                        [class]="alert.level === 'God Level' ? 'bg-red-600 text-white border-red-600' : 'bg-gray-50 text-gray-400 border-gray-200'"
+                        class="cursor-pointer border-2 p-3 rounded-xl flex items-center justify-center font-black text-[10px] uppercase tracking-widest transition-all">
+                        Critical
+                    </div>
+                    <div (click)="alert.level = 'Emergency'"
+                        [class]="alert.level === 'Emergency' ? 'bg-orange-500 text-white border-orange-500' : 'bg-gray-50 text-gray-400 border-gray-200'"
+                        class="cursor-pointer border-2 p-3 rounded-xl flex items-center justify-center font-black text-[10px] uppercase tracking-widest transition-all">
+                        Warning
+                    </div>
+                    <div (click)="alert.level = 'Info'"
+                        [class]="alert.level === 'Info' ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 text-gray-400 border-gray-200'"
+                        class="cursor-pointer border-2 p-3 rounded-xl flex items-center justify-center font-black text-[10px] uppercase tracking-widest transition-all">
+                        Info
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+
+    <!-- Dialog Actions -->
+    <div class="bg-gray-50 p-6 px-8 flex justify-end items-center gap-4">
+        <button mat-dialog-close
+            class="text-[11px] font-black uppercase text-gray-400 hover:text-red-700 transition-colors tracking-widest mr-4">
+            Abort
+        </button>
+        <button (click)="onSubmit()" [disabled]="!alert.title || !alert.content"
+            class="bg-red-600 text-white px-8 py-3.5 rounded-xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-red-700 disabled:opacity-30 disabled:hover:bg-red-600 transition-all flex items-center gap-2 group/btn shadow-xl shadow-red-900/20 active:scale-95">
+            <span>Broadcast Alert</span>
+            <mat-icon class="scale-75 group-hover:translate-x-1 transition-transform">rss_feed</mat-icon>
+        </button>
+    </div>
+</div>

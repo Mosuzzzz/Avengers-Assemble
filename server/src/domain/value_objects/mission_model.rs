@@ -28,12 +28,21 @@ pub struct MissionModel {
     pub created_at: NaiveDateTime,
     #[diesel(sql_type = Timestamp)]
     pub updated_at: NaiveDateTime,
+    #[diesel(sql_type = diesel::sql_types::Bool)]
+    pub has_password: bool,
+    #[serde(skip)]
+    #[diesel(sql_type = Nullable<Varchar>)]
+    pub password: Option<String>,
+    #[diesel(sql_type = Int4)]
+    pub max_crew: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AddMissionModel {
     pub name: String,
     pub description: Option<String>,
+    pub password: Option<String>,
+    pub max_crew: Option<i32>,
 }
 
 impl AddMissionModel {
@@ -43,6 +52,8 @@ impl AddMissionModel {
             description: self.description.clone(),
             status: MissionStatuses::Open.to_string(),
             chief_id,
+            password: self.password.clone(),
+            max_crew: self.max_crew.unwrap_or(5),
         }
     }
 }
@@ -51,6 +62,7 @@ impl AddMissionModel {
 pub struct EditMissionModel {
     pub name: Option<String>,
     pub description: Option<String>,
+    pub max_crew: Option<i32>,
 }
 
 impl EditMissionModel {
@@ -59,6 +71,7 @@ impl EditMissionModel {
             name: self.name.clone(),
             description: self.description.clone(),
             chief_id,
+            max_crew: self.max_crew,
         }
     }
 }

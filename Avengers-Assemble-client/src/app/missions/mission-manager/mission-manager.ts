@@ -96,7 +96,9 @@ export class MissionManager {
           chief_display_name,
           crew_count: 0,
           created_at: now,
-          updated_at: now
+          updated_at: now,
+          has_password: !!addMission.password,
+          max_crew: addMission.max_crew || 5
         }
         // เพิ่มข้อมูลใหม่เข้าไปใน BehaviorSubject
         const currentMissions = this._missionsSubject.value

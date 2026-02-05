@@ -18,7 +18,12 @@
                     {{m.status}}
                 </span>
             </div>
-            <h1 class="text-3xl font-extrabold text-gray-900 border-b pb-2">{{m.name}}</h1>
+            <div class="flex items-center gap-2">
+                <h1 class="text-3xl font-extrabold text-gray-900 border-b pb-2">{{m.name}}</h1>
+                @if (m.has_password) {
+                <span class="text-yellow-600 text-sm" title="Password-protected mission">🔒</span>
+                }
+            </div>
         </div>
         <div>
             <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Description</h3>
@@ -44,7 +49,8 @@
             <div class="space-y-1 text-right">
                 <h4 class="text-xs font-medium text-gray-400 uppercase">Crew Members</h4>
                 <div class="flex items-center justify-end gap-2">
-                    <span class="text-lg font-bold text-gray-900">{{m.crew_count}}</span>
+                    <span class="text-lg font-bold text-gray-900">{{m.crew_count}}<span
+                            class="text-gray-400 font-normal">/</span>{{m.max_crew}}</span>
                     <span class="text-xs text-gray-500">active brawlers</span>
                 </div>
             </div>
@@ -54,7 +60,7 @@
             <span>Last Updated: {{m.updated_at | date:'medium'}}</span>
         </div>
         <div class="px-6 py-4 flex flex-row-reverse gap-3">
-            @if (display_name() === m.chief_display_name) {
+            @if (isChief()) {
             @if (m.status === 'Open') {
             <button (click)="editMission(m)"
                 class="px-5 py-2 border border-gray-300 text-gray-700 text-sm font-semibold rounded-md hover:bg-white hover:border-black transition-all">
@@ -81,7 +87,7 @@
 
             }@else {
             @if (isMember()) {
-            @if (m.status === 'Open') {
+            @if (m.status === 'Open' || m.status === 'Failed') {
             <button (click)="leaveMission(m)"
                 class="px-5 py-2 text-red-600 text-sm font-semibold rounded-md hover:bg-red-50">
                 Leave
@@ -131,10 +137,11 @@
             <!-- Add Intel -->
             <div class="flex gap-2">
                 <input type="text" [(ngModel)]="newIntel" (keyup.enter)="sendIntel()"
-                    placeholder="Report mission intel..."
-                    class="flex-1 bg-gray-100 border-none rounded-md px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                <button (click)="sendIntel()"
-                    class="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors">
+                    [placeholder]="isMember() || isChief() ? 'Report mission intel...' : 'Join mission to report intel...'"
+                    [disabled]="!(isMember() || isChief())"
+                    class="flex-1 bg-gray-100 border-none rounded-md px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50 disabled:cursor-not-allowed">
+                <button (click)="sendIntel()" [disabled]="!(isMember() || isChief())"
+                    class="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path
                             d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />

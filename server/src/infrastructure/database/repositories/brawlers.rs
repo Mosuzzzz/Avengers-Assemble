@@ -114,7 +114,10 @@ SELECT
     brawlers.avatar_url AS chief_avatar_url,
     (SELECT COUNT(*) FROM crew_memberships WHERE crew_memberships.mission_id = missions.id) AS crew_count,
     missions.created_at,
-    missions.updated_at
+    missions.updated_at,
+    CASE WHEN missions.password IS NOT NULL THEN true ELSE false END AS has_password,
+    missions.password,
+    missions.max_crew
 FROM missions
 LEFT JOIN brawlers ON brawlers.id = missions.chief_id
 WHERE missions.deleted_at IS NULL
@@ -172,14 +175,14 @@ ORDER BY missions.created_at DESC
 
         let sql = r#"
 SELECT 
-    brawlers.id, 
-    brawlers.display_name, 
-    brawlers.avatar_url,
-    brawlers.xp,
+    id, 
+    display_name, 
+    avatar_url,
+    xp,
     (SELECT COUNT(*) FROM missions WHERE missions.chief_id = brawlers.id AND missions.status = 'Completed') AS mission_success_count,
     (SELECT COUNT(*) FROM crew_memberships WHERE crew_memberships.brawler_id = brawlers.id) AS mission_joined_count
 FROM brawlers
-WHERE brawlers.id = $1
+WHERE id = $1
         "#;
 
         let result = diesel::sql_query(sql)

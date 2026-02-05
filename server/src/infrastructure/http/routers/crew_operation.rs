@@ -1,13 +1,14 @@
 use std::sync::Arc;
 
 use axum::{
-    Extension, Router,
+    Extension, Json, Router,
     extract::{Path, State},
     http::StatusCode,
     middleware,
     response::IntoResponse,
     routing::{delete, post},
 };
+use serde::{Deserialize, Serialize};
 
 use crate::{
     application::use_cases::crew_operation::CrewOperationUseCase,
@@ -25,23 +26,36 @@ use crate::{
     },
 };
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct JoinMissionPayload {
+    pub password: Option<String>,
+}
+
 pub async fn join<T1, T2>(
     State(user_case): State<Arc<CrewOperationUseCase<T1, T2>>>,
     Extension(user_id): Extension<i32>,
     Path(mission_id): Path<i32>,
+    Json(payload): Json<JoinMissionPayload>,
 ) -> impl IntoResponse
 where
     T1: CrewOperationRepository + Send + Sync + 'static,
     T2: MissionViewingRepository + Send + Sync,
 {
-    match user_case.join(mission_id, user_id).await {
+    match user_case.join(mission_id, user_id, payload.password).await {
         Ok(_) => (
             StatusCode::OK,
             format!("Join Mission_id:{} completed", mission_id),
         )
             .into_response(),
 
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+        Err(e) => {
+            let status = if e.to_string().contains("Invalid password") {
+                StatusCode::UNAUTHORIZED
+            } else {
+                StatusCode::INTERNAL_SERVER_ERROR
+            };
+            (status, e.to_string()).into_response()
+        }
     }
 }
 

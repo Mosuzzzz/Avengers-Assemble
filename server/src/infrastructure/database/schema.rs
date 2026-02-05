@@ -20,12 +20,10 @@ diesel::table! {
 }
 
 diesel::table! {
-    mission_intel (id) {
-        id -> Int4,
+    crew_memberships (mission_id, brawler_id) {
         mission_id -> Int4,
         brawler_id -> Int4,
-        content -> Text,
-        created_at -> Timestamp,
+        joined_at -> Timestamp,
     }
 }
 
@@ -43,10 +41,12 @@ diesel::table! {
 }
 
 diesel::table! {
-    crew_memberships (mission_id, brawler_id) {
+    mission_intel (id) {
+        id -> Int4,
         mission_id -> Int4,
         brawler_id -> Int4,
-        joined_at -> Timestamp,
+        content -> Text,
+        created_at -> Timestamp,
     }
 }
 
@@ -59,21 +59,25 @@ diesel::table! {
         #[max_length = 255]
         status -> Varchar,
         chief_id -> Int4,
-        avatar_url -> Nullable<Varchar>,
         created_at -> Timestamp,
         updated_at -> Timestamp,
         deleted_at -> Nullable<Timestamp>,
+        #[max_length = 255]
+        password -> Nullable<Varchar>,
+        max_crew -> Int4,
     }
 }
 
 diesel::joinable!(crew_memberships -> brawlers (brawler_id));
 diesel::joinable!(crew_memberships -> missions (mission_id));
+diesel::joinable!(mission_intel -> brawlers (brawler_id));
+diesel::joinable!(mission_intel -> missions (mission_id));
 diesel::joinable!(missions -> brawlers (chief_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     brawlers,
     crew_memberships,
-    missions,
+    global_alerts,
     mission_intel,
-    global_alerts
+    missions,
 );

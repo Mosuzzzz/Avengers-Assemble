@@ -14,4 +14,8 @@ export class ServerError {
   constructor() {
     this.errorMsg = this._router.currentNavigation()?.extras.state?.['error'] as string
   }
+
+  goHome() {
+    this._router.navigate(['/'])
+  }
 }

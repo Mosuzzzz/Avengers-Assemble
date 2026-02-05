@@ -29,17 +29,30 @@ where
         }
     }
 
-    pub async fn join(&self, mission_id: i32, brawler_id: i32) -> Result<()> {
-        let max_crew_per_mission = std::env::var("MAX_CREW_PER_MISSION")
-            .expect("missing value")
-            .parse()?;
-
+    pub async fn join(
+        &self,
+        mission_id: i32,
+        brawler_id: i32,
+        password: Option<String>,
+    ) -> Result<()> {
         let mission = self.mission_viewing_repository.get_one(mission_id).await?;
 
         if mission.chief_id == brawler_id {
             return Err(anyhow::anyhow!(
                 "The Chief can not join in his own mission as a crew member!!"
             ));
+        }
+
+        // Check password if mission is password-protected
+        if let Some(mission_password) = &mission.password {
+            match password {
+                Some(provided_password) if &provided_password == mission_password => {
+                    // Password matches, continue
+                }
+                _ => {
+                    return Err(anyhow::anyhow!("Invalid password"));
+                }
+            }
         }
 
         let crew_count = self
@@ -52,7 +65,7 @@ where
         if !mission_status_condition {
             return Err(anyhow::anyhow!("Mission is not joinable"));
         }
-        let crew_count_condition = crew_count < max_crew_per_mission;
+        let crew_count_condition = crew_count < mission.max_crew as i64;
         if !crew_count_condition {
             return Err(anyhow::anyhow!("Mission is full"));
         }

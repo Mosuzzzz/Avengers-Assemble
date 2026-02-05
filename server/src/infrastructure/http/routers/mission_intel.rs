@@ -1,12 +1,15 @@
 use crate::{
     application::use_cases::mission_intel::MissionIntelUseCase,
-    domain::{
-        repositories::mission_intel::MissionIntelRepository,
-        value_objects::intel_model::AddIntelModel,
+    domain::repositories::{
+        mission_intel::MissionIntelRepository, mission_viewing::MissionViewingRepository,
     },
+    domain::value_objects::intel_model::AddIntelModel,
     infrastructure::{
         database::{
-            postgresql_connection::PgPoolSquad, repositories::mission_intel::MissionIntelPostgres,
+            postgresql_connection::PgPoolSquad,
+            repositories::{
+                mission_intel::MissionIntelPostgres, mission_viewing::MissionViewingPostgres,
+            },
         },
         http::middlewares::auth::auth,
     },
@@ -21,27 +24,36 @@ use axum::{
 };
 use std::sync::Arc;
 
-pub async fn add_intel<T>(
-    State(use_case): State<Arc<MissionIntelUseCase<T>>>,
+pub async fn add_intel<T, V>(
+    State(use_case): State<Arc<MissionIntelUseCase<T, V>>>,
     Extension(user_id): Extension<i32>,
     Path(mission_id): Path<i32>,
     Json(payload): Json<AddIntelModel>,
 ) -> impl IntoResponse
 where
     T: MissionIntelRepository + Send + Sync,
+    V: MissionViewingRepository + Send + Sync,
 {
     match use_case.add_intel(mission_id, user_id, payload).await {
         Ok(id) => (StatusCode::CREATED, id.to_string()).into_response(),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+        Err(e) => {
+            let msg = e.to_string();
+            if msg.contains("must join") {
+                (StatusCode::FORBIDDEN, msg).into_response()
+            } else {
+                (StatusCode::INTERNAL_SERVER_ERROR, msg).into_response()
+            }
+        }
     }
 }
 
-pub async fn get_intel<T>(
-    State(use_case): State<Arc<MissionIntelUseCase<T>>>,
+pub async fn get_intel<T, V>(
+    State(use_case): State<Arc<MissionIntelUseCase<T, V>>>,
     Path(mission_id): Path<i32>,
 ) -> impl IntoResponse
 where
     T: MissionIntelRepository + Send + Sync,
+    V: MissionViewingRepository + Send + Sync,
 {
     match use_case.get_intel(mission_id).await {
         Ok(intel) => (StatusCode::OK, Json(intel)).into_response(),
@@ -50,8 +62,10 @@ where
 }
 
 pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
-    let repository = MissionIntelPostgres::new(db_pool);
-    let use_case = MissionIntelUseCase::new(Arc::new(repository));
+    let intel_repo = MissionIntelPostgres::new(Arc::clone(&db_pool));
+    let viewing_repo = MissionViewingPostgres::new(db_pool);
+
+    let use_case = MissionIntelUseCase::new(Arc::new(intel_repo), Arc::new(viewing_repo));
 
     Router::new()
         .route("/{mission_id}", get(get_intel))
