@@ -11,17 +11,15 @@
                     </span>
                 </div>
                 <div class="flex gap-10 items-center">
-                    @if (!avatar_url()) {
-                        @if (imgPreview()) {
-                            <img [src]="imgPreview()" class="w-16 h-16 rounded-full shadow-md" alt="upload image">
-                        }@else{
-                        <span
-                            class="w-16 h-16 rounded-full text-xl font-semibold flex justify-center items-center bg-gray-200 uppercase text-gray-600">
-                            {{display_name()!.charAt(0)}}
-                        </span>
-                        }
+                    @if (imgPreview()) {
+                    <img [src]="imgPreview()" class="w-16 h-16 rounded-full shadow-md object-cover" alt="upload image">
+                    } @else if (avatar_url()) {
+                    <img [src]="avatar_url()" class="w-16 h-16 rounded-full shadow-md object-cover" alt="avatar">
                     }@else{
-                        <img [src]="avatar_url()" class="w-16 h-16 rounded-full shadow-md" alt="upload image">
+                    <span
+                        class="w-16 h-16 rounded-full text-xl font-semibold flex justify-center items-center bg-gray-200 uppercase text-gray-600">
+                        {{display_name()?.charAt(0)}}
+                    </span>
                     }
                     <!-- {{display_name()}} -->
                     <input type="file" #filePicker (change)="onImgPicked($event)" accept=".jpg, .png">
