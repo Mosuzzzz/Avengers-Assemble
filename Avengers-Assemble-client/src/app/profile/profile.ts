@@ -33,6 +33,9 @@ export class Profile {
     this.display_name = computed(() => this._passport.data()?.display_name)
     this.avatar_url = computed(() => this._passport.avatar())
     this.form = new FormGroup({})
+    if(!this.avatar_url()){
+      console.log(1)
+    }
   }
 
   async onSubmit() {
