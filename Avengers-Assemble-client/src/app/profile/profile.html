@@ -1,4 +1,4 @@
-<div class="flex justify-center itmes-center h-screen bg-transparent">
+<div class="flex justify-center items-center h-screen bg-transparent">
     <div class="flex flex-col justify-center">
         <div class="card  w-[550px] border shadow-md rounded-md p-16 bg-white">
             <div class="flex flex-col gap-10">
@@ -7,16 +7,18 @@
                         Edit Profile
                     </h1>
                     <span class="text-sm text-gray-500">
-                        Uptate your personal Profile
+                        Update your personal Profile
                     </span>
                 </div>
                 <div class="flex gap-10 items-center">
                     @if (imgPreview()) {
-                    <img [src]="imgPreview()" class="w-16 h-16 rounded-full shadow-md" alt="upload image">
+                    <img [src]="imgPreview()" class="w-16 h-16 rounded-full shadow-md object-cover" alt="upload image">
+                    } @else if (avatar_url()) {
+                    <img [src]="avatar_url()" class="w-16 h-16 rounded-full shadow-md object-cover" alt="avatar">
                     }@else{
                     <span
                         class="w-16 h-16 rounded-full text-xl font-semibold flex justify-center items-center bg-gray-200 uppercase text-gray-600">
-                        {{display_name()!.charAt(0)}}
+                        {{display_name()?.charAt(0)}}
                     </span>
                     }
                     <!-- {{display_name()}} -->

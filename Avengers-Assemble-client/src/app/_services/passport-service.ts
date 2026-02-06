@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http'
-import { inject, Injectable, signal } from '@angular/core'
+import { inject, Injectable, signal, computed } from '@angular/core'
 import { environment } from '../../environments/environment' ///
 import { LoginModel, Passport, RegisterModel } from '../_models/passport'
 import { firstValueFrom } from 'rxjs'
@@ -14,14 +14,13 @@ export class PassportService {
   private _http = inject(HttpClient)
 
   data = signal<undefined | Passport>(undefined)
-  avatar = signal<string>("")
+  avatar = computed(() => this.data()?.avatar_url || "")
 
   saveAvatarImgUrl(url: string) {
     let passport = this.data()
     if (passport) {
       passport.avatar_url = url
-      this.avatar.set(url)
-      this.data.set(passport)
+      this.data.set({ ...passport })
       this.savePassportToLocalStorage()
     }
   }
@@ -61,7 +60,6 @@ export class PassportService {
 
   destroy() {
     this.data.set(undefined)
-    this.avatar.set("")
     localStorage.removeItem(this._key)
   }
 
