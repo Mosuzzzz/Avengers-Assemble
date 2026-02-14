@@ -1,9 +1,10 @@
 use std::sync::Arc;
 
 use axum::{
-    Json, Router,
+    Extension, Json, Router,
     extract::{Path, Query, State},
     http::StatusCode,
+    middleware,
     response::IntoResponse,
     routing::get,
 };
@@ -14,8 +15,12 @@ use crate::{
         repositories::mission_viewing::MissionViewingRepository,
         value_objects::mission_filter::MissionFilter,
     },
-    infrastructure::database::{
-        postgresql_connection::PgPoolSquad, repositories::mission_viewing::MissionViewingPostgres,
+    infrastructure::{
+        database::{
+            postgresql_connection::PgPoolSquad,
+            repositories::mission_viewing::MissionViewingPostgres,
+        },
+        http::middlewares::auth::auth,
     },
 };
 
@@ -49,11 +54,15 @@ where
 
 pub async fn get_all<T>(
     State(user_case): State<Arc<MissionViewingUseCase<T>>>,
-    filter: Query<MissionFilter>,
+    Extension(brawler_id): Extension<i32>,
+    mut filter: Query<MissionFilter>,
 ) -> impl IntoResponse
 where
     T: MissionViewingRepository + Send + Sync,
 {
+    // Set exclude_chief_id to the authenticated user's ID
+    filter.exclude_chief_id = Some(brawler_id);
+
     match user_case.get_all(&filter).await {
         Ok(model) => (StatusCode::OK, Json(model)).into_response(),
 
@@ -67,8 +76,8 @@ pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
 
     Router::new()
         .route("/{mission_id}", get(get_one))
-        .route("/filter", get(get_all))
         .route("/crew/{mission_id}", get(get_crew))
-        // .route_layer(middleware::from_fn(auth))
+        .route("/filter", get(get_all))
+        .route_layer(middleware::from_fn(auth))
         .with_state(Arc::new(user_case))
 }

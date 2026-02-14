@@ -3,3 +3,5 @@ api-tests/
 assemble.postman_collection.json
 target/
 .env
+Avengers-Assemble-client/src/environments/environment.development.ts
+Avengers-Assemble-client/src/environments/environment.ts

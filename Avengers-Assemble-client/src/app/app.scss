@@ -14,9 +14,11 @@
     overflow: auto;
 }
 
+.test{
+    position: fixed;
+}
+
 .nav{
-    z-index: 1000;
-    position: absolute;
-    top: 0px;
-    left: 40%;
+    display: flex;
+    justify-content: center;
 }

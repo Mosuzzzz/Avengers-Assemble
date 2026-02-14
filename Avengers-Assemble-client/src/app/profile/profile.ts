@@ -13,6 +13,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
   styleUrl: './profile.scss',
 })
 export class Profile {
+
   avatar_url: Signal<string>
   display_name: Signal<string | undefined>
   private _passport = inject(PassportService)
@@ -23,7 +24,7 @@ export class Profile {
   errorMsg = signal<string | undefined>(undefined)
 
   form: FormGroup
- 
+
   profileForm = new FormGroup({
     display_name: new FormControl(''),
   })
@@ -33,9 +34,7 @@ export class Profile {
     this.display_name = computed(() => this._passport.data()?.display_name)
     this.avatar_url = computed(() => this._passport.avatar())
     this.form = new FormGroup({})
-    if(!this.avatar_url()){
-      console.log(1)
-    }
+
   }
 
   async onSubmit() {
@@ -50,6 +49,7 @@ export class Profile {
       }
     }
 
+
     const { display_name } = this.profileForm.value
     if (display_name && display_name !== this.display_name()) {
       const error = await this._user.updateDisplayName(display_name)
@@ -59,6 +59,11 @@ export class Profile {
         this.profileForm.get('display_name')?.reset()
       }
     }
+  }
+  onCancle() {
+    this.imgFile = undefined
+    this.imgPreview.set(undefined)
+    this.profileForm.get('display_name')?.reset()
   }
 
   async onImgPicked(event: Event) {

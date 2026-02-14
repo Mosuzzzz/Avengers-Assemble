@@ -7,7 +7,7 @@
     <div
         class="tap-row flex justify-between items-start border-b-2 p-6 shadow-[0_6px_10px_-8px_rgba(0,0,0,0.12)] bg-gray-50 rounded-md">
         <div class="flex flex-col">
-            <span class="text-4xl flex flex-col tracking-tigh font-semibold">My mission</span>
+            <span class="text-4xl flex flex-col tracking-tigh font-semibold">My Dashboard</span>
             <span class="text-gray-500">Operation Command Center</span>
         </div>
 
@@ -59,7 +59,7 @@
             </div>
         </div>
     </div>
-    <div class="card p-6 flex flex-wrap gap-6 mt-3 pl-28">
+    <div class="card p-10 gap-3 flex justify-start flex-wrap mt-3 pl-28">
         @for (mission of myMissions$ | async; track mission.id) {
         <div class="card-item flex flex-col bg-white border-gray-400 p-10 h-80 w-72 rounded-s-md shadow-md gap-2">
             <h1 class="text-2xl font-medium min-h-[38px] overflow-hidden">{{mission.name}}</h1>
