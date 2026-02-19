@@ -1,18 +1,28 @@
-<div class="flex flex-col gap-2 bg-white">
-    <h4 mat-dialog-title>Edit Mission</h4>
-    <mat-dialog-content>
-        <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem;">
-            <input type="text" [(ngModel)]="editMission.name" placeholder="Mission Name"
-            style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" />
-            <textarea [(ngModel)]="editMission.description" placeholder="Mission Description"
-            class="p-2 border-[#ccc] border rounded-sm h-24 min-h-24 max-h-24"></textarea>
+
+<div class="p-8 w-[450px] bg-white rounded-3xl font-sans">
+    <div class="flex flex-col ">
+        <div class="px-6 py-4 flex justify-between items-center">
+            <h4 class="text-2xl font-black text-slate-900 tracking-tight">New Mission</h4>
+            <button type="button" (click)="close()"
+                class="cursor-pointer text-black hover:text-gray-400 text-2xl px-4 transition-colors">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
-        
-        <mat-dialog-actions>
-            <button (click)="onSubmit()" color="primary" [disabled]="!editMission.name"
-            class="bg-black text-white p-2 rounded-md cursor-pointer hover:bg-gray-400"
-            >
-            Save Changes</button>
-        </mat-dialog-actions>
-    </mat-dialog-content>
+        <mat-dialog-content>
+
+            <div class="flex flex-col gap-5">
+                <input type="text" [(ngModel)]="editMission.name" placeholder="Mission Name"
+                    class="w-full p-5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-black transition-all outline-none text-lg text-slate-700 placeholder:text-slate-400 font-medium" />
+               <textarea [(ngModel)]="editMission.description" placeholder="Mission Description"
+                    rows="3"
+                    class="w-full p-5  bg-slate-50 border-none resize-none rounded-2xl focus:ring-2 focus:ring-black transition-all outline-none text-lg text-slate-700 placeholder:text-slate-400 font-medium"></textarea>
+            </div>
+
+            <mat-dialog-actions>
+                <button (click)="onSubmit()" color="primary" [disabled]="!editMission.name"
+                    class="flex-1 py-2 bg-black text-white p-2 rounded-2xl text-xl font-bold shadow-lg cursor-pointer hover:bg-slate-800 transition-all">
+                     Save Changes</button>
+            </mat-dialog-actions>
+        </mat-dialog-content>
+    </div>
 </div>

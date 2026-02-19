@@ -21,5 +21,6 @@ export const routes: Routes = [
     },
 
     { path: 'server-error', component: ServerError },
-    { path: '**', component: NotFound },
+    { path: 'not-found', component: NotFound },
+    { path: '**', redirectTo: 'not-found' },
 ]

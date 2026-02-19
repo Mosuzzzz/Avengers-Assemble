@@ -8,7 +8,9 @@
 
     <div class="relative group mb-8">
         <mat-icon
-            class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-black transition-colors">search</mat-icon>
+            class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-black transition-colors">
+            search
+        </mat-icon>
         <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="search()" autofocus
             placeholder="Type mission name..."
             class="w-full pl-14 pr-6 py-5 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-black transition-all outline-none text-lg text-slate-700 placeholder:text-slate-400 font-medium font-sans">

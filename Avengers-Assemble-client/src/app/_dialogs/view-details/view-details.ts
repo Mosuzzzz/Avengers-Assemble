@@ -7,10 +7,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { EditMissionDialog } from '../edit-mission/edit-mission';
 import { EditMission } from '../../_models/edit-mission';
 import { MissionService } from '../../_services/mission-service';
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: 'app-view-details',
-  imports: [DatePipe, MatTooltipModule, MatDialogClose],
+  imports: [DatePipe, MatTooltipModule, MatDialogClose, MatIcon],
   templateUrl: './view-details.html',
   styleUrl: './view-details.scss',
 })

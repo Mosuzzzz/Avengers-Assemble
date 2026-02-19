@@ -1,13 +1,14 @@
 import { Component, inject } from '@angular/core'
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog'
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef } from '@angular/material/dialog'
 import { MatButtonModule } from '@angular/material/button'
 import { FormsModule } from '@angular/forms'
 import { Mission } from '../../_models/mission'
 import { EditMission } from '../../_models/edit-mission'
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
     selector: 'app-edit-mission',
-    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButtonModule, FormsModule],
+    imports: [ MatDialogContent, MatDialogActions, MatButtonModule, FormsModule, MatIcon],
     templateUrl: './edit-mission.html',
     styleUrl: './edit-mission.scss',
 })
@@ -24,7 +25,7 @@ export class EditMissionDialog {
         const mission = this.clean(this.editMission)
         this._dialogRef.close(mission)
     }
-    onclose() {
+    close() {   
         this._dialogRef.close()
     }
 

@@ -59,8 +59,8 @@ export class Missions {
     const missions = await this._mission.getByFilter(this.filter)
     const mappedMissions = missions.map(m => ({
       ...m,
-      created_at: new Date(m.created_at),
-      updated_at: new Date(m.updated_at)
+      created_at: m.created_at,
+      updated_at: m.updated_at
     }))
     this._missionsSubject.next(mappedMissions)
   }

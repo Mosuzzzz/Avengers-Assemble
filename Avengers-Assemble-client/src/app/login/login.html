@@ -5,66 +5,70 @@
                 Avengers Assemble
             </div>
             <div class="text-3xl mt-4 self-center font-black">
-                {{mode}} 
+                {{mode}}
             </div>
             <div class="form">
                 <form (ngSubmit)="onSubmit()" [formGroup]="form" autocomplete="off" class="w-[375px] mt-4">
                     <div class="mt-4">
                         <input matInput type="text" (input)="updateErrorMsg('username')" formControlName="username"
-                        placeholder="username" class="p-[10px] h-[48px] w-full border-black border rounded-sm">
+                            placeholder="username" class="p-[10px] h-[48px] w-full border-black border rounded-sm">
                         @if (form.controls['username'].invalid) {
-                            <span class="text-red-500">{{errorMsg.username()}}</span>
+                        <span class="text-red-500">{{errorMsg.username()}}</span>
                         }
                     </div>
                     <div class="mt-4">
                         <input type="password" (input)="updateErrorMsg('password')" formControlName="password"
-                        placeholder="password" class="p-[10px] h-[48px] w-full border-black border rounded-sm">
+                            placeholder="password" class="p-[10px] h-[48px] w-full border-black border rounded-sm">
                         @if (form.controls['password'].invalid) {
-                            <span class="text-red-500">{{errorMsg.password()}}</span>
+                        <span class="text-red-500">{{errorMsg.password()}}</span>
                         }
                     </div>
                     @if (mode !== 'Login') {
-                        <div class="mt-4">
-                            <input type="password" (input)="updateErrorMsg('cf_password')" formControlName="cf_password"
-                            placeholder="confirm password" class="p-[10px] h-[48px] w-full border-black border rounded-sm">
-                            @if (form.controls['cf_password'].invalid) {
-                                <span class="text-red-500">{{errorMsg.cf_password()}}</span>
-                            }
-                        </div>
-                        <div class="mt-4">
-                            <input type="text" (input)="updateErrorMsg('displayname')" formControlName="display_name"
+                    <div class="mt-4">
+                        <input type="password" (input)="updateErrorMsg('cf_password')" formControlName="cf_password"
+                            placeholder="confirm password"
+                            class="p-[10px] h-[48px] w-full border-black border rounded-sm">
+                        @if (form.controls['cf_password'].invalid) {
+                        <span class="text-red-500">{{errorMsg.cf_password()}}</span>
+                        }
+                    </div>
+                    <div class="mt-4">
+                        <input type="text" (input)="updateErrorMsg('displayname')" formControlName="display_name"
                             placeholder="aka" class="p-[10px] h-[48px] w-full border-black border rounded-sm">
-                            @if (form.controls['display_name'].invalid) {
-                                <span class="text-red-500">{{errorMsg.displayname()}}</span>
-                            }
-                        </div>
+                        @if (form.controls['display_name'].invalid) {
+                        <span class="text-red-500">{{errorMsg.displayname()}}</span>
+                        }
+                    </div>
                     }
-                    <button type="submit" class="bg-black font-bold text-white w-full rounded-md p-3 mt-4 cursor-pointer"
-                    [disabled]="loading() || !form.valid">
-                    @if(mode==='Login'){
+                    <button type="submit"
+                        class="bg-black font-bold text-white w-full rounded-md p-3 mt-4 cursor-pointer"
+                        [disabled]="loading() || !form.valid">
+                        @if(mode==='Login'){
                         Login
-                    }
-                    @if(mode!=='Login'){
+                        }
+                        @if(mode!=='Login'){
                         Get Start
+                        }
+                    </button>
+                    @if (errorMsg.server() !== '') {
+                    <span class="text-red-600">{{errorMsg.server()}}</span>
                     }
-                </button>
-                @if (errorMsg.server() !== '') {
-                    <span class="error">{{errorMsg.server()}}</span>
-                }
-            </form>
-        </div>
-        <div class="mt-4 self-center">or</div>
-        @if (mode === 'Login') {
+                </form>
+            </div>
+            <div class="mt-4 self-center">or</div>
+            @if (mode === 'Login') {
             <div class="mt-4 self-center toggle">New to Brawler? <span
-                class="cursor-pointer text-blue-300 hover:text-blue-600 font-bold" (click)="toggleMode()">Sign Up</span>
+                    class="cursor-pointer text-blue-300 hover:text-blue-600 font-bold" (click)="toggleMode()">Sign
+                    Up</span>
             </div>
-        }
-        @if (mode !== 'Login') {
+            }
+            @if (mode !== 'Login') {
             <div class="mt-4 self-center toggle">Already have an account? <span
-                class="cursor-pointer text-blue-300 hover:text-blue-600 font-bold" (click)="toggleMode()">Sign In</span>
+                    class="cursor-pointer text-blue-300 hover:text-blue-600 font-bold" (click)="toggleMode()">Sign
+                    In</span>
             </div>
-        }
+            }
+        </div>
+
     </div>
-    
-</div>
 </div>

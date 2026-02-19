@@ -13,7 +13,7 @@
 
 
         <div class="flex flex-col items-end gap-8">
-            <!-- Search Section (Top Right) -->
+
             <div class="flex items-center gap-6">
                 @if (filter.name) {
                 <div
@@ -37,8 +37,8 @@
                 </div>
             </div>
 
-            <!-- Status Filter Section -->
-            <div class="space-x-5 font-bold flex relative top-5">
+
+            <div class="space-x-5 font-bold text-lg flex relative top-5">
                 <span (click)="setStatus(undefined)" class="cursor-pointer hover:text-gray-500 transition-all"
                     [class.underline]="filter.status === undefined" [class.decoration-4]="filter.status === undefined"
                     [class.underline-offset-8]="filter.status === undefined">all</span>

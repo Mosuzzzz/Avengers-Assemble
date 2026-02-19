@@ -5,7 +5,7 @@
             <span class="text-gray-500">Discover your next assignment</span>
         </div>
         <div class="flex flex-col items-end gap-8">
-            <!-- Search Section (Top Right) -->
+
             <div class="flex items-center gap-6">
                 @if (filter.name) {
                 <div
@@ -29,23 +29,23 @@
                 </div>
             </div>
 
-            <!-- Status Filter Section -->
-            <div class="space-x-5 font-bold flex relative top-5">
-                <span (click)="setStatus(undefined)" class="cursor-pointer hover:text-gray-500 transition-all"
+
+            <div class="space-x-5 font-bold text-lg flex relative top-5">
+                <span (click)="setStatus(undefined)" class="cursor-pointer hover:text-gray-500 "
                     [class.underline]="filter.status === undefined" [class.decoration-4]="filter.status === undefined"
                     [class.underline-offset-8]="filter.status === undefined">all</span>
-                <span (click)="setStatus('Open')" class="cursor-pointer hover:text-gray-500 transition-all"
+                <span (click)="setStatus('Open')" class="cursor-pointer hover:text-gray-500 "
                     [class.underline]="filter.status === 'Open'" [class.decoration-4]="filter.status === 'Open'"
                     [class.underline-offset-8]="filter.status === 'Open'">open</span>
-                <span (click)="setStatus('Completed')" class="cursor-pointer hover:text-gray-500 transition-all"
+                <span (click)="setStatus('Completed')" class="cursor-pointer hover:text-gray-500 "
                     [class.underline]="filter.status === 'Completed'"
                     [class.decoration-4]="filter.status === 'Completed'"
                     [class.underline-offset-8]="filter.status === 'Completed'">completed</span>
-                <span (click)="setStatus('InProgress')" class="cursor-pointer hover:text-gray-500 transition-all"
+                <span (click)="setStatus('InProgress')" class="cursor-pointer hover:text-gray-500 "
                     [class.underline]="filter.status === 'InProgress'"
                     [class.decoration-4]="filter.status === 'InProgress'"
                     [class.underline-offset-8]="filter.status === 'InProgress'">in progress</span>
-                <span (click)="setStatus('Failed')" class="cursor-pointer hover:text-gray-500 transition-all"
+                <span (click)="setStatus('Failed')" class="cursor-pointer hover:text-gray-500 "
                     [class.underline]="filter.status === 'Failed'" [class.decoration-4]="filter.status === 'Failed'"
                     [class.underline-offset-8]="filter.status === 'Failed'">failed</span>
             </div>

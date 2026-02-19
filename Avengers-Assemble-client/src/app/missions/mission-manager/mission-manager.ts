@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal } from '@angular/core'
+import { Component, computed, inject } from '@angular/core'
 import { MissionService } from '../../_services/mission-service'
 import { MatDialog } from '@angular/material/dialog'
 import { Mission } from '../../_models/mission'
@@ -63,7 +63,6 @@ export class MissionManager {
   async loadMyMission() {
     let missions = await this._mission.getMyMissions()
 
-    // Client-side filtering for My Missions
     if (this.filter.name) {
       const search = this.filter.name.toLowerCase()
       missions = missions.filter(m => m.name.toLowerCase().includes(search))
@@ -74,8 +73,8 @@ export class MissionManager {
 
     const mappedMissions = missions.map(m => ({
       ...m,
-      created_at: new Date(m.created_at),
-      updated_at: new Date(m.updated_at)
+      created_at: m.created_at,
+      updated_at: m.updated_at
     }))
     this._missionsSubject.next(mappedMissions)
   }
@@ -98,9 +97,10 @@ export class MissionManager {
           created_at: now,
           updated_at: now
         }
-        // เพิ่มข้อมูลใหม่เข้าไปใน BehaviorSubject
+
         const currentMissions = this._missionsSubject.value
         this._missionsSubject.next([...currentMissions, newMission])
+        this.refreshPage()
       }
     })
   }
@@ -112,6 +112,10 @@ export class MissionManager {
     ref.afterClosed().subscribe(() => {
       this.loadMyMission()
     })
+  }
+
+  refreshPage() {
+    window.location.reload();
   }
 
   getStatusClass(status: string): string {

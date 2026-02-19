@@ -13,7 +13,7 @@ import { environment } from '../../environments/environment'
   templateUrl: './home.html',
   styleUrl: './home.scss',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink, FaIconComponent]
+  imports: [FormsModule, CommonModule]
 })
 export class Home {
   private _router = inject(Router)
