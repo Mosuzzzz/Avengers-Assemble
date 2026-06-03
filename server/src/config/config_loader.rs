@@ -11,8 +11,9 @@ pub fn load() -> Result<DotEnvyConfig> {
     dotenvy::dotenv().ok();
 
     let server = Server {
-        port: std::env::var("SERVER_PORT")
-            .expect("SERVER_PORT is valid")
+        port: std::env::var("PORT")
+            .or_else(|_| std::env::var("SERVER_PORT"))
+            .expect("PORT or SERVER_PORT must be set")
             .parse()?,
         body_limit: std::env::var("SERVER_BODY_LIMIT")
             .expect("SERVER_BODY_LIMIT is valid")
