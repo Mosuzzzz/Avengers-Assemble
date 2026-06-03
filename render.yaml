@@ -18,13 +18,13 @@ services:
         value: 7
       - key: JWT_TTL
         value: 7
-      - key: DATABASE_URL
-        fromDatabase:
-          name: avengers-assemble-db
-          property: connectionString
       # Set these manually in the Render dashboard (Environment tab):
+      # DATABASE_URL  — from Supabase: Project Settings > Database > Connection string (URI)
+      #                 append ?sslmode=require if not already included
       # JWT_USER_SECRET, JWT_USER_REFRESH_SECRET
       # CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
+      - key: DATABASE_URL
+        sync: false
       - key: JWT_USER_SECRET
         sync: false
       - key: JWT_USER_REFRESH_SECRET
@@ -35,8 +35,3 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
-
-databases:
-  - name: avengers-assemble-db
-    databaseName: avengers_assemble
-    plan: free
